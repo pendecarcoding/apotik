@@ -244,10 +244,10 @@ class Cproduct extends CI_Controller {
 	            {	               
 	              $product_id = $this->generator(20);	               
 	              $insert_csv = array();
-	              $insert_csv['manufacturer_id'] = (!empty($csv_line[0])?$csv_line[0]:null);
+	              $insert_csv['manufacturer_id'] = (!empty($csv_line[0])?$csv_line[0]:'-');
 	              $insert_csv['product_name'] = (!empty($csv_line[1])?$csv_line[1]:null);
 	              $insert_csv['generic_name'] = (!empty($csv_line[2])?$csv_line[2]:null);
-	              $insert_csv['strength'] = (!empty($csv_line[3])?$csv_line[3]:null);
+	              $insert_csv['strength'] = (!empty($csv_line[3])?$csv_line[3]:0);
 	              $insert_csv['category_id'] = (!empty($csv_line[4])?$csv_line[4]:null);
 	              $insert_csv['manufacturer_price'] = (!empty($csv_line[5])?$csv_line[5]:null);
 	              $insert_csv['sale_price'] = (!empty($csv_line[6])?$csv_line[6]:null);
