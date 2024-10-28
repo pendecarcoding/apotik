@@ -84,7 +84,7 @@
                         </form>
             <div class="product-grid scrollbar"  id="style-3">
              
-                    <div style="display: flex;" id="product_search">
+                    <div style="display: flex;    flex-wrap: wrap;" id="product_search">
                     <?php $i=0;
                     foreach($itemlist as $item){
                         

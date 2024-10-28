@@ -163,6 +163,31 @@ public function product_search_by_manufacturer(){
 	        echo "</select>";
 	    }
 	}
+
+	//Add Purchase CSV
+	public function add_purchase_csv(){
+		$CI =& get_instance();
+		$data = array(
+			'title' => display('add_purchase_csv')
+		);
+		$content = $CI->parser->parse('purchase/add_purchase_csv',$data,true);
+		$this->template->full_admin_html_view($content);
+	}
+	
+	public function generateBatchId(){
+		$length = 7;
+		// Karakter yang digunakan untuk membuat ID
+		$characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+		$charactersLength = strlen($characters);
+		$randomString = '';
+
+		// Buat ID berdasarkan panjang yang diinginkan
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[rand(0, $charactersLength - 1)];
+		}
+
+		return 'RAND-'.$randomString;
+	}
 	//Csv Purchase upload
     function uploadCsv_Purchase()
     {
@@ -185,32 +210,49 @@ public function product_search_by_manufacturer(){
                    $insert_csv['batch_id'] = (!empty($csv_line[5])?$csv_line[5]:null);
                    $insert_csv['expiry_date'] = (!empty($csv_line[6])?$csv_line[6]:null);
                    $insert_csv['qty'] = (!empty($csv_line[7])?$csv_line[7]:null);
-                   $insert_csv['manufacturer_price'] = (!empty($csv_line[8])?$csv_line[8]:null);
+                   $insert_csv['manufacturer_price'] = (!empty($csv_line[8])?$csv_line[8]:0);
                 }
-              $product_id = $this->db->select('product_id')->from('product_information')->where('product_name',$insert_csv['product_name'])->get()->row()->product_id;
-                $manufacturer_id = $this->db->select('manufacturer_id')->from('manufacturer_information')->where('manufacturer_name',$insert_csv['manufacturer_name'])->get()->row()->manufacturer_id;
-                $purchase_id = $insert_csv['purchase_id'];
-                $chalan_no =date(ymdHi);
-                $purchasedata = array(
-			'purchase_id'			=>	$purchase_id,
-			'chalan_no'				=>	$chalan_no,
-			'manufacturer_id'		=>	$manufacturer_id,
-			'grand_total_amount'	=>	$insert_csv['manufacturer_price']*$insert_csv['qty'],
-			'total_discount'		=>	0,
-			'purchase_date'			=>	date("Y-m-d", strtotime($insert_csv['purchase_date'])),
-			'purchase_details'		=>	$insert_csv['details'],
-			'status'				=>	1
-		);
+				$batchId = ($insert_csv['batch_id'] == null) ? $this->generateBatchId() : $insert_csv['batch_id'];
+                // Retrieve product ID if it exists
+								$product_result = $this->db->select('product_id')
+								->from('product_information')
+								->where('product_name', $insert_csv['product_name'])
+								->get()
+								->row();
 
-              $manufacturer_ledger = array(
-			'transaction_id'		=>	$purchase_id,
-			'chalan_no'				=>	$chalan_no,
-			'manufacturer_id'		=>	$manufacturer_id,
-			'amount'				=>	$insert_csv['manufacturer_price']*$insert_csv['qty'],
-			'date'					=>  date("Y-m-d", strtotime($insert_csv['purchase_date'])),
-			'description'			=>	'Purchase From Manufacturer. '.$insert_csv['details'],
-			'status'				=>	1
-		);
+				$product_id = $product_result ? $product_result->product_id : null;
+
+								// Retrieve manufacturer ID if it exists
+								$manufacturer_result = $this->db->select('manufacturer_id')
+									->from('manufacturer_information')
+									->where('manufacturer_name', $insert_csv['manufacturer_name'])
+									->get()
+									->row();
+
+				$manufacturer_id = $manufacturer_result ? $manufacturer_result->manufacturer_id : null;
+			if($insert_csv['qty'] > 0 && $product_id != null && $manufacturer_id != null && is_numeric($insert_csv['qty'])){
+				$purchase_id = $insert_csv['purchase_id'];
+                $chalan_no = date("ymdHi");
+                $purchasedata = array(
+					'purchase_id'			=>	$purchase_id,
+					'chalan_no'				=>	$chalan_no,
+					'manufacturer_id'		=>	$manufacturer_id,
+					'grand_total_amount'	=>	$insert_csv['manufacturer_price']*$insert_csv['qty'],
+					'total_discount'		=>	0,
+					'purchase_date'			=>	date("d/m/Y", strtotime($insert_csv['purchase_date'])),
+					'purchase_details'		=>	$insert_csv['details'],
+					'status'				=>	1
+				);
+
+                $manufacturer_ledger = array(
+					'transaction_id'		=>	$purchase_id,
+					'chalan_no'				=>	$chalan_no,
+					'manufacturer_id'		=>	$manufacturer_id,
+					'amount'				=>	$insert_csv['manufacturer_price']*$insert_csv['qty'],
+					'date'					=>  date("d/m/Y", strtotime($insert_csv['purchase_date'])),
+					'description'			=>	'Purchase From Manufacturer. '.$insert_csv['details'],
+					'status'				=>	1
+				);
                $purchasedetails = array(
 				'purchase_detail_id'=>	$this->generator(15),
 				'purchase_id'		=>	$purchase_id,
@@ -219,10 +261,10 @@ public function product_search_by_manufacturer(){
 				'rate'				=>	$insert_csv['manufacturer_price'],
 				'total_amount'		=>	$insert_csv['manufacturer_price']*$insert_csv['qty'],
 				'discount'			=>	0,
-				'batch_id'          =>  $insert_csv['batch_id'],
-				'expeire_date'      =>  date("Y-m-d", strtotime($insert_csv['expiry_date'])),
+				'batch_id'          =>  $batchId,
+				'expeire_date'      =>  date("d/m/Y", strtotime($insert_csv['expiry_date'])),
 				'status'			=>	1
-			);
+			    );
 
                 if ($count > 0) {
                 	$this->db->insert('product_purchase_details', $purchasedetails);
@@ -231,27 +273,29 @@ public function product_search_by_manufacturer(){
                     $this->db->insert('product_purchase',$purchasedata);
                    
                 	}else{
-             $purtotal= $this->db->select('*')->from('product_purchase_details')->where_in('purchase_id',$purchasedata)->get()->result();
-             $total = 0;
-             foreach ($purtotal as $totalpurchase) {
-             	$producttotal = $totalpurchase->quantity*$totalpurchase->rate;
-             	 $total +=$producttotal;
-             }
-             $purupdate = array(
-             	'grand_total_amount' => $total
-             );
-             $purdetailsupdate = array(
-             	'amount' => $total
-             );
-            $this->db->where('purchase_id',$purchase_id);
-			$this->db->update('product_purchase',$purupdate);
+						$purtotal= $this->db->select('*')->from('product_purchase_details')->where_in('purchase_id',$purchasedata)->get()->result();
+						$total = 0;
+						foreach ($purtotal as $totalpurchase) {
+							$producttotal = $totalpurchase->quantity*$totalpurchase->rate;
+							$total +=$producttotal;
+						}
+						$purupdate = array(
+							'grand_total_amount' => $total
+						);
+						$purdetailsupdate = array(
+							'amount' => $total
+						);
+						$this->db->where('purchase_id',$purchase_id);
+						$this->db->update('product_purchase',$purupdate);
            
                 	}
                   
                    
                     }  
-                $count++; 
-            }
+                     $count++; 
+			}
+                
+        }
             
         }
    

@@ -59,9 +59,15 @@
 		                    </div>  
 
 		                    <button type="button" id="btn-filter" class="btn btn-success"><?php echo display('find') ?></button>
-		                  
-		              </form>	
+							
+					  
+
+		              </form>
+					 
 		            </div>
+					<div class="col-sm-3">
+					<a href="<?php echo base_url('Cpurchase/add_purchase_csv')?>"  id="btn-filter" class="btn btn-primary">IMPORT PEMBELIAN</a>
+					</div>
 		           
 		        </div>
 		    </div>
