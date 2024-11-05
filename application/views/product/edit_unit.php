@@ -57,14 +57,14 @@
                          <div class="row">
                     <div class="col-md-9 col-sm-12">
 
-                        <?php echo form_open('Cproduct/unit_form/'.$unit->id,'class="form-inner"') ?>
+                        <?php echo form_open('Cproduct/unit_form/'.$unit['id'],'class="form-inner"') ?>
 
-                            <?php echo form_hidden('id', $unit->id) ?>
+                            <?php echo form_hidden('id', $unit['id']) ?>
 
                             <div class="form-group row">
                                 <label for="unit_name" class="col-xs-3 col-form-label"><?php echo display('unit_name')?> <i class="text-danger">*</i></label>
                                 <div class="col-xs-9">
-                                    <input name="unit_name"  type="text" class="form-control" id="unit_name" placeholder="<?php echo display('unit_name')?>" value="<?php echo html_escape($unit->unit_name)?>">
+                                    <input name="unit_name"  type="text" class="form-control" id="unit_name" placeholder="<?php echo display('unit_name')?>" value="<?php echo html_escape($unit['unit_name'])?>">
                                 </div>
                             </div>
 
@@ -76,8 +76,8 @@
                                 <label class="col-sm-3"><?php echo display('status') ?></label>
                                 <div class="col-xs-9"> 
                                     <div class="form-check">
-                                        <label class="radio-inline"><input type="radio" name="status" value="1" <?php if($unit->status == 1){echo 'checked';}?>><?php echo display('active') ?></label>
-                                        <label class="radio-inline"><input type="radio" name="status" value="0" <?php if($unit->status == 0){echo 'checked';}?>><?php echo display('inactive') ?></label>
+                                        <label class="radio-inline"><input type="radio" name="status" value="1" <?php if($unit['status'] == 1){echo 'checked';}?>><?php echo display('active') ?></label>
+                                        <label class="radio-inline"><input type="radio" name="status" value="0" <?php if($unit['status'] == 0){echo 'checked';}?>><?php echo display('inactive') ?></label>
                                     </div>
                                 </div>
                             </div>

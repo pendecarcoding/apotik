@@ -788,8 +788,10 @@ class Cproduct extends CI_Controller {
                 }
                 redirect('Cproduct/unit_form/'.$postData['id']);
             } else {
-                $data['title'] = display('edit_units');
-                $data['unit'] = $this->Units->read_by_id($id);
+				$data = array(
+					'title' => display('edit_units'),
+					'unit' => (array) $this->Units->read_by_id($id)
+				);
                 $content = $this->parser->parse('product/edit_unit', $data, true);
                 $this->template->full_admin_html_view($content);
             } 
