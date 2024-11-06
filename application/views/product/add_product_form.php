@@ -89,14 +89,14 @@
                             </div>
                         </div>
                            <div class="row">
-                            <div class="col-sm-6">
+                            <!-- <div class="col-sm-6">
                                 <div class="form-group row">
                                     <label for="strength" class="col-sm-4 col-form-label"><?php echo display('strength') ?> <i class="text-danger"></i></label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" tabindex="1" name="strength" type="text" id="strength" placeholder="<?php echo display('strength') ?>" >
-                                    </div>
+                                    <div class="col-sm-8"> -->
+                                        <input class="form-control" value='0' tabindex="1" name="strength" type="hidden" id="strength" placeholder="<?php echo display('strength') ?>" >
+                                    <!-- </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="col-sm-6">
                                <div class="form-group row">
