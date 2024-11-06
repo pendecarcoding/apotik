@@ -255,10 +255,10 @@
                                             </tr>
                                         <?php } ?>
                                        
-                                        <tr>
+                                        <tr> -->
                                             <th class="text-left grand_total"><?php echo display('previous'); ?> :</th>
                                             <td class="text-right grand_total"><?php echo (($position == 0) ? "$currency {previous}" : "{previous} $currency") ?></td>
-                                        </tr>-->
+                                        </tr>
                                         <tr>
                                             <th class="text-left grand_total"><?php echo  display('grand_total') ?> :</th>
                                             <td class="text-right grand_total"><?php
