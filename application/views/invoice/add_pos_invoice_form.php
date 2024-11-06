@@ -262,23 +262,22 @@
                                      foreach($taxes as $taxfldt){?>
                                     <tr class="hideableRow hiddenRow">
                                        
-                                <td class="text-right" colspan="8"><b><?php echo $taxfldt['tax_name'] ?></b></td>
-                                <td class="text-right">
-                                    <input id="total_tax_amount<?php echo $x;?>" tabindex="-1" class="form-control text-right valid totalTax" name="total_tax<?php echo $x;?>" value="0.00" readonly="readonly" aria-invalid="false" type="text">
-                                </td>
+                                <!-- <td class="text-right" colspan="8"><b><?php echo $taxfldt['tax_name'] ?></b></td>
+                                <td class="text-right"> -->
+                                    <input id="total_tax_amount<?php echo $x;?>" tabindex="-1" class="form-control text-right valid totalTax" name="total_tax<?php echo $x;?>" value="0.00" readonly="readonly" aria-invalid="false" type="hidden">
+                                <!-- </td> -->
                                
                                
                                  
                                 </tr>
                             <?php $x++;}?>
-                              <tr>
+                         
+                              <input id="total_tax_amount" tabindex="-1" class="form-control text-right valid" name="total_tax" value="0.00" readonly="readonly" aria-invalid="false" type="hidden">
+
+                              <input type="hidden" id="previous" class="form-control text-right" name="previous" value="0.00" readonly="readonly" />
                                          
-                                        <td class="text-right" colspan="8"><b><?php echo display('total_tax') ?>:</b></td>
-                                        <td class="text-right">
-                                            <input id="total_tax_amount" tabindex="-1" class="form-control text-right valid" name="total_tax" value="0.00" readonly="readonly" aria-invalid="false" type="text">
-                                        </td>
-                                         <td><a class="btn btn-warning taxbutton text-center"  data-toggle="collapse" data-target=".hiddenRow" aria-expanded="false" aria-controls="hiddenRow"><i class="fa fa-angle-double-up"></i></a></td>
-                                    </tr>
+                              <input type="hidden" id="dueAmmount" class="form-control text-right" name="due_amount" value="0.00" readonly="readonly"/>
+                              
                                     
                                     <tr>
                                         <td colspan="8"  class="text-right"><b><?php echo display('grand_total') ?>:</b></td>
@@ -288,12 +287,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                         <tr>
-                                    <td colspan="8"  class="text-right"><b><?php echo display('previous'); ?>:</b></td>
-                                    <td class="text-right">
-                                        <input type="text" id="previous" class="form-control text-right" name="previous" value="0.00" readonly="readonly" />
-                                    </td>
-                                </tr>
+                                         
                                 <tr>
                                     <td colspan="8"  class="text-right"><b><?php echo display('net_total'); ?>:</b></td>
                                     <td class="text-right">
@@ -315,10 +309,7 @@
                                             <input type="submit" id="add_invoice" class="btn btn-success" name="add-invoice" value="<?php echo display('submit') ?>" tabindex="15"/>
                                         </td>
 
-                                        <td class="text-right" colspan="7"><b><?php echo display('due') ?>:</b></td>
-                                        <td class="text-right">
-                                            <input type="text" id="dueAmmount" class="form-control text-right" name="due_amount" value="0.00" readonly="readonly"/>
-                                        </td>
+                                        
                                     </tr>
                                     <tr id="change_m"><td class="text-right" colspan="8" id="ch_l"><b>Change:</b></td>
                                         <td class="text-right">
