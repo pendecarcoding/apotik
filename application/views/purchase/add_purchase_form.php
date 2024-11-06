@@ -102,13 +102,22 @@
                         </div>
 
                         <div class="row">
+                        <?php
+                            // Generate a unique invoice code with current date and time
+                            $invoice_no = 'INV-' . date('YmdHis'); // Format: INV-YYYYMMDDHHMMSS
+                            ?>
+
                             <div class="col-sm-6">
                                 <div class="form-group row">
-                                    <label for="invoice_no" class="col-sm-3 col-form-label"><?php echo display('invoice_no') ?>
+                                    <label for="invoice_no" class="col-sm-3 col-form-label">
+                                        <?php echo display('invoice_no') ?>
                                         <i class="text-danger">*</i>
                                     </label>
                                     <div class="col-sm-9">
-                                        <input type="text" tabindex="3" class="form-control" name="chalan_no" placeholder="<?php echo display('invoice_no') ?>" id="invoice_no" required />
+                                        <input type="text" tabindex="3" class="form-control" name="chalan_no" 
+                                            placeholder="<?php echo display('invoice_no') ?>" 
+                                            id="invoice_no" required 
+                                            value="<?php echo $invoice_no; ?>" readonly />
                                     </div>
                                 </div>
                             </div>

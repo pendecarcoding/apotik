@@ -228,13 +228,8 @@
                                             </tr>
                                             <?php
                                         }
-                                        if ($invoice_all_data[0]['total_tax'] != 0) {
-                                            ?>
-                                            <tr>
-                                                <th class="text-left"><?php echo display('tax') ?> : </th>
-                                                <td  class="text-right"><?php echo (($position == 0) ? "$currency {total_tax}" : "{total_tax} $currency") ?> </td>
-                                            </tr>
-                                        <?php } ?>
+                                       
+                                       ?>
                                        
                                         <tr>
                                             <th class="text-left grand_total"><?php echo display('previous'); ?> :</th>

@@ -52,6 +52,16 @@
                     <?php echo form_open_multipart('Cproduct/product_update',array('class' => 'form-vertical', 'id' => 'product_update','name' => 'product_update'))?>
                  <div class="panel-body">
                     <div class="row">
+
+                    <div class="col-sm-6">
+                                <div class="form-group row">
+                                    <label for="barcode_or_qrcode" class="col-sm-4 col-form-label"><?php echo display('barcode_or_qrcode') ?> <i class="text-danger"></i></label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" name="product_id_change" type="text" value="{product_id}" placeholder="<?php echo display('barcode_or_qrcode') ?>"  tabindex="1" >
+                                    </div>
+                                </div>
+                                
+                            </div>
                             <div class="col-sm-6">
                                 <div class="form-group row">
                                     <label for="product_name" class="col-sm-4 col-form-label"><?php echo display('product_name') ?> <i class="text-danger">*</i></label>

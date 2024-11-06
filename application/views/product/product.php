@@ -84,7 +84,7 @@
 										<th><?php echo display('shelf') ?></th>
 										<th><?php echo display('sell_price') ?></th>
 									    <th><?php echo display('purchase_price') ?></th>
-										<th><?php echo display('strength') ?></th>
+										
 										<th><?php echo display('image') ?>s</th>
 										<th width="130px"><?php echo display('action') ?></th>
 									</tr>
