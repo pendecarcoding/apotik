@@ -129,12 +129,12 @@
 	                                        $subqty += $purdetails['quantity'];
 	                                         ?></td>
 
-	                                        <td align="center"><?php echo (($position==0)?$currency.' '.$purdetails['rate']:$purdetails['rate'].' '. $currency) ?></td>
+	                                        <td align="center"><?php echo (($position==0)?$currency.' '.number_format($purdetails['rate']):number_format($purdetails['rate']).' '. $currency) ?></td>
 	                                        <td align="right"><?php
                                              if($purdetails['total_amount'] < 0){
-                                             	$t_amount = number_format($purdetails['total_amount'] * -1, 2, '.', ',');
+                                             	$t_amount = number_format($purdetails['total_amount']);
                                              }else{
-                                             	$t_amount = number_format($purdetails['total_amount'], 2, '.', ',');
+                                             	$t_amount = number_format($purdetails['total_amount']);
                                              }
 	                                         echo (($position==0)?$currency.' '.$t_amount:$t_amount.' '. $currency);
 	                                        $sub_total += $purdetails['total_amount'];  ?></td>
