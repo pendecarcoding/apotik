@@ -171,6 +171,7 @@ class Cproduct extends CI_Controller {
 
 	
 			$data['product_name'] 		= $this->input->post('product_name',true);
+			$data['product_id'] 		= $this->input->post('product_id_change',true);
 			$data['generic_name'] 		= $this->input->post('generic_name',true);
 			$data['box_size'] 			= $this->input->post('box_size',true);
 			$data['strength'] 			= $this->input->post('strength',true);

@@ -103,7 +103,7 @@ public function getProductList($postData=null){
 
          $generic_name = '<a href="'.$base_url.'Cproduct/medicine_search_details/'.$record->product_id.'">'.$record->generic_name.'</a>';
         
-          $medicine_name = '<a href="'.$base_url.'Cproduct/product_details/'.$record->product_id.'" class="" data-toggle="tooltip" data-placement="left" >'.$record->product_name.'('.$record->strength.')'.'</a>';
+          $medicine_name = '<a href="'.$base_url.'Cproduct/product_details/'.$record->product_id.'" class="" data-toggle="tooltip" data-placement="left" >'.$record->product_name.'</a>';
                
             $data[] = array( 
             	'sl'               =>$sl,
@@ -112,9 +112,9 @@ public function getProductList($postData=null){
                 'product_model'    =>$record->category_name,
                 'manufacturer_name'=>$record->manufacturer_name,
 				'product_location' =>$record->product_location,
-				'price'	           =>$record->price,
-				'purchase_p'	   =>$record->manufacturer_price,
-				'strength'         =>$record->strength,
+				'price'	           =>number_format($record->price),
+				'purchase_p'	   =>number_format($record->manufacturer_price),
+				// 'strength'         =>$record->strength,
 				'image'	           =>$image,
 				'button'           =>$button,
 				
