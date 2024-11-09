@@ -57,7 +57,7 @@
                                 <div class="form-group row">
                                     <label for="barcode_or_qrcode" class="col-sm-4 col-form-label"><?php echo display('barcode_or_qrcode') ?> <i class="text-danger"></i></label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" name="product_id_change" type="text" value="{product_id}" placeholder="<?php echo display('barcode_or_qrcode') ?>"  tabindex="1" >
+                                        <input required class="form-control" name="product_id_change" type="text" value="{product_id}" placeholder="<?php echo display('barcode_or_qrcode') ?>"  tabindex="1" >
                                     </div>
                                 </div>
                                 

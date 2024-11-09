@@ -452,21 +452,31 @@ class Cproduct extends CI_Controller {
 	// product_delete
 	public function product_delete($product_id=null)
 	{	
-        $CI = & get_instance();
-        $this->auth->check_admin_auth();
-        $CI->load->model('Products');
-        $check_calculation = $CI->Products->check_calculaton($product_id);
-        if($check_calculation > 0){
-            $this->session->set_userdata(array('error_message' => display('you_cant_delete_this_product')));
-            redirect(base_url('Cproduct/manage_product'));
-
-        }else{
-        $result = $CI->Products->delete_product($product_id);
-         $this->session->set_userdata(array('message' => display('successfully_delete')));
-        redirect(base_url('Cproduct/manage_product'));
+		try {
+			log_message('info', 'memulai Prosess Hapus Product');
+			$CI = & get_instance();
+			$this->auth->check_admin_auth();
+			$CI->load->model('Products');
+			$check_calculation = $CI->Products->check_calculaton($product_id);
+			if($check_calculation > 0){
+				$this->session->set_userdata(array('error_message' => display('you_cant_delete_this_product')));
+				redirect(base_url('Cproduct/manage_product'));
+	
+			}else{
+			$result = $CI->Products->delete_product($product_id);
+			$this->session->set_userdata(array('message' => display('successfully_delete')));
+			redirect(base_url('Cproduct/manage_product'));
+			}
+		} catch (\Throwable $th) {
+			log_message('error', 'Error Delete Product :'.$th->getMessage());
+		}
+			
+            
+		
+       
     }
 			
-	}
+	
 	//Retrieve Single Item  By Search
 	public function product_by_search()
 	{
