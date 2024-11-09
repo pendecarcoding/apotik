@@ -2,7 +2,7 @@
   foreach($itemlist as $item){
 
     ?>
-                                                     <div class="col-xs-6 col-sm-4 col-md-2 col-p-3">
+                      
                             <div class="panel panel-bd product-panel select_product">
                                 <div class="panel-body">
                                     <img src="<?php echo !empty($item->image)?html_escape($item->image):'assets/img/icons/default.jpg'; ?>" class="img-responsive pointer" onclick="onselectimage('<?php echo $item->product_id ?>')" alt="<?php echo html_escape($item->product_name);?>">
@@ -22,5 +22,5 @@ echo html_escape($text);
 ;
                                 ?></div>
                             </div>
-                        </div>
+                    
                        <?php } ?>                            
