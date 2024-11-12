@@ -290,6 +290,34 @@ $searchdate =(!empty($postdate)?$postdate:date('F Y'));
                     </div>
                 </div>
             </div>
+
+           <div class="col-md-12">
+    <div class="panel panel-bd lobidisable">
+        <div class="panel-heading">
+            <caption>
+                <h4>Log User (URUTAN BERDASARKAN LOG TERAKHIR)</h4>
+            </caption>
+        </div>
+        <div class="panel-body">
+            <table id="logTable" class="table table-bordered table-striped table-hover">
+                
+                <thead>
+                    <tr>
+                        <th class="text-center">No</th>
+                        <th class="text-center">User</th>
+                        <th class="text-center">Aksi</th>
+                        <th class="text-center">Waktu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+
+
   
         </div>
 
@@ -413,6 +441,7 @@ $searchdate =(!empty($postdate)?$postdate:date('F Y'));
                                 </tbody>
                             </table>
           </div>
+         
           <div class="modal-footer">
             <input type="hidden" name="is_modal_shown" id="is_modal_shown" value="<?php echo $this->session->userdata('is_modal_shown');?>">
             <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo display('close')?></button>

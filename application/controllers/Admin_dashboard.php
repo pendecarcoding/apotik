@@ -266,7 +266,7 @@ class Admin_dashboard extends CI_Controller {
 	}
 	#==============Valid user check=======#
 	public function do_login(){
-
+		$this->load->model('LogModel');
 		$error = '';
 		$setting_detail = $this->Web_settings->retrieve_setting_editdata(); 
 
@@ -290,6 +290,8 @@ class Admin_dashboard extends CI_Controller {
 					$this->output->set_header("Location: ".base_url().'Admin_dashboard/login', TRUE, 302);
 				}
 				else{
+					$userId = $this->session->userdata('user_id');
+					$this->LogModel->addLog($userId, 'Login');
 					$this->output->set_header("Location: ".base_url(), TRUE, 302);
 		        }
 			}
@@ -304,6 +306,8 @@ class Admin_dashboard extends CI_Controller {
 				$this->session->set_userdata(array('error_message'=>$error));
 				$this->output->set_header("Location: ".base_url().'Admin_dashboard/login', TRUE, 302);
 			}else{
+				$userId = $this->session->userdata('user_id');
+				$this->LogModel->addLog($userId, 'Login');
 				$this->output->set_header("Location: ".base_url(), TRUE, 302);
 	        }
 		}
