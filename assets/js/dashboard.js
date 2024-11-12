@@ -19,6 +19,22 @@ thisCalendar.datepicker('setDate', new Date(year, month, 1));
 
     
 });
+$(document).ready(function() {
+    var base_url = $('#base_url').val();
+    $('#logTable').DataTable({
+        "ajax": {
+            "url": base_url +'User/getLogs',
+            "type": "GET"
+        },
+        "columns": [
+            { "data": 0, "className": "text-center" }, // No
+            { "data": 1, "className": "text-center" }, // User
+            { "data": 2, "className": "text-center" }, // Aksi
+            { "data": 3, "className": "text-center" }  // Waktu
+        ]
+    });
+});
+
     $( document ).ready(function() {
         "use strict";
 var  dismodl=$('#is_modal_shown').val();

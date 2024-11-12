@@ -14,6 +14,7 @@ class User extends CI_Controller {
         $this->load->library('session');
         $this->load->model('Userm');
         $this->auth->check_admin_auth();
+        $this->load->model('LogModel');
     }
 
     #==============User page load============#
@@ -164,5 +165,28 @@ class User extends CI_Controller {
          $this->session->set_userdata('is_modal_shown',1);
         return true;
     }   
+    public function getLogs() {
+        $this->load->model('LogModel');
+        $logs = $this->LogModel->getAllLogs();
+    
+        $data = [];
+        foreach ($logs as $index => $log) {
+            // Convert UTC time from DB to Indonesian time
+            $utcTime = new DateTime($log['timestamp'], new DateTimeZone('UTC'));
+            $utcTime->setTimezone(new DateTimeZone('Asia/Jakarta'));
+            $indonesianTime = $utcTime->format('Y-m-d H:i:s'); // Format as needed
+    
+            $data[] = [
+                $index + 1,
+                $log['name'], // Display user's name
+                $log['action'],
+                $indonesianTime,
+            ];
+        }
+    
+        echo json_encode(['data' => $data]);
+    }
+    
+    
 
 }

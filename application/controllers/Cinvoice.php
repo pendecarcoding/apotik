@@ -1,15 +1,21 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Cinvoice extends CI_Controller {
 	
+	private $userId;
 	function __construct() {
       parent::__construct();
+	  $this->load->model('LogModel');
+	  $this->userId = $this->session->userdata('user_id');
     }
 	public function index()
 	{
+		
 		$CI =& get_instance();
 		$CI->auth->check_admin_auth();
 		$CI->load->library('linvoice');
 		$content = $CI->linvoice->invoice_add_form();
+		
+	    $this->LogModel->addLog($this->userId, 'Akses Faktur Baru');
 		$this->template->full_admin_html_view($content);
 	}
 	//Insert invoice
@@ -33,11 +39,13 @@ class Cinvoice extends CI_Controller {
             $data['invoice_id'] = $invoice_id;
             $data['details'] = $this->load->view('invoice/invoice_html', $data, true);
             $data['message'] = display('save_successfully');
+			$this->LogModel->addLog($this->userId, 'Aksi Pembayaran Menu Faktur Baru',json_encode($data));
         }else{
            $data['status'] = false;
            $data['error_message'] = 'Sorry';
 
         }
+		
         echo json_encode($data);
     }
 
@@ -67,6 +75,7 @@ class Cinvoice extends CI_Controller {
 		$CI->auth->check_admin_auth();
 		$CI->load->library('linvoice');
 		$content = $CI->linvoice->invoice_edit_data($invoice_id);
+		$this->LogModel->addLog($this->userId, 'Akses Edit Form Faktur');
 		$this->template->full_admin_html_view($content);
 	}
 	// invoice Update
@@ -76,6 +85,13 @@ class Cinvoice extends CI_Controller {
 		$CI->auth->check_admin_auth();
 		$CI->load->model('Invoices');
 		$invoice_id = $CI->Invoices->update_invoice();
+		$data = [
+			'invoice_id' =>  $this->input->post('invoice_id',true),
+		    'product_id'=>  $this->input->post('product_id',true),
+		    'customer_id'  => $this->input->post('customer_id',true),
+            'Quantity' => $this->input->post('product_quantity',true)
+		];
+		$this->LogModel->addLog($this->userId, 'Melakukan Update Faktur',json_encode($data));
 		$this->session->set_userdata(array('message'=>display('successfully_updated')));
 		redirect("Cinvoice/invoice_inserted_data/".$invoice_id);
 	}
@@ -97,6 +113,7 @@ class Cinvoice extends CI_Controller {
         $CI->load->library('linvoice');
         $CI->load->model('Invoices');
         $content = $this->linvoice->invoice_list();
+		$this->LogModel->addLog($this->userId, 'Akses Kelola Faktur');
         $this->template->full_admin_html_view($content);
     }
 
