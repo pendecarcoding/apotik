@@ -257,6 +257,8 @@ public function pos_invoice_setup($product_id){
 	//Count invoice
 	public function invoice_entry()
 	{
+		$this->db->trans_start(); // Start transaction
+
 		$tablecolumn = $this->db->list_fields('tax_collection');
         $num_column = count($tablecolumn)-4;
 		$invoice_id = $this->generator(10);
@@ -509,7 +511,7 @@ public function pos_invoice_setup($product_id){
 				$this->db->insert('invoice_details',$data1);
 			}
 		}
-	
+	   $this->db->trans_complete();
 	   $currency_details = $this->Web_settings->retrieve_setting_editdata();
 		 $message = 'Mr/Mrs. '.$customerinfo->customer_name.',
         '.'You have purchase  '.$this->input->post('grand_total_price',true).' '. $currency_details[0]['currency'].' You have paid .'.$this->input->post('paid_amount',true).' '. $currency_details[0]['currency'];
