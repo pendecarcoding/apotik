@@ -208,33 +208,59 @@ var j = 0;
 
     var test = +tx + +e + -ds+ -invdis+ + ad;
     var totaldiscount = +ds + +invdis;
-    $("#grandTotal").val(test.toFixed(2, 2));
-     $("#total_discount_ammount").val(totaldiscount.toFixed(2, 2));
- var previous    = $("#previous").val();
- var gt          = $("#grandTotal").val();
-   
-   var grnt_totals = +gt+ +previous;
-   $("#n_total").val(grnt_totals.toFixed(2,2));
+    // Format and display the grand total in Indonesian format
+$("#grandTotal").val(test.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+// Format and display the total discount amount
+$("#total_discount_ammount").val(totaldiscount.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+// Get previous and grand total values, removing any formatting to parse as numbers
+var previous = parseFloat($("#previous").val().replace(/\./g, '').replace(',', '.')) || 0;
+var gt = parseFloat($("#grandTotal").val().replace(/\./g, '').replace(',', '.')) || 0;
+
+// Perform the calculation
+var grnt_totals = previous + gt;
+
+// Display the final result in Indonesian format
+$("#n_total").val(grnt_totals.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
    invoice_paidamount();
 
 }
 
 //Invoice Paid Amount
 "use strict";
+function formatNumber(num) {
+    return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 function invoice_paidamount() {
     var d = 0;
-    var t = $("#n_total").val(),
-        a = $("#paidAmount").val(),
-        e = t - a;
-        d = a - t;
-        if(e > 0){
-    $("#dueAmmount").val(e.toFixed(2,2))
-}else{
-  $("#dueAmmount").val(0)   
-   $("#change").val(d.toFixed(2,2))
+    
+    // Get the values and replace '.' and ',' to convert to a valid number format
+    var t = $("#n_total").val().replace(/\./g, "").replace(",", ".");
+    var a = $("#paidAmount").val().replace(/\./g, "").replace(",", ".");
+    
+    // Parse them as floats
+    t = parseFloat(t);
+    a = parseFloat(a);
 
+    if (!isNaN(t) && !isNaN(a)) {
+        var e = t - a;
+        d = a - t;
+
+        if (e > 0) {
+            $("#dueAmmount").val(e.toFixed(2));
+        } else {
+            $("#dueAmmount").val(0);
+            $("#change").val(formatNumber(d));
+        }
+    } else {
+        // Handle the error if parsing fails (e.g., show an error message or reset values)
+        $("#dueAmmount").val(0);
+        $("#change").val(0);
+    }
 }
-}
+
 //Stock Limit
 "use strict";
 function stockLimit(t) {
@@ -781,12 +807,88 @@ $(document).ready(function(){
 });
 
 
+// $(document).ready(function() {
+//     var frm = $("#gui_sale_insert");
+//     var output = $("#output");
+
+//     frm.on('submit', function(e) {
+//         e.preventDefault(); 
+//         $.ajax({
+//             url: $(this).attr('action'),
+//             method: $(this).attr('method'),
+//             dataType: 'json',
+//             data: frm.serialize(),
+//             success: function(data) {
+//                 if (data.status === true) {
+//                     output.empty().html(data.message)
+//                         .addClass('alert-success')
+//                         .removeClass('alert-danger')
+//                         .removeClass('hide');
+                    
+//                     $("#inv_id").val(data.invoice_id);
+//                     $('#printconfirmodal').modal('show');
+
+//                     // Optional check for Enter key press (keyCode 13)
+//                     if (data.status === true && event.keyCode === 13) {
+//                         // Add logic here for Enter key action if needed
+//                     }
+//                 } else {
+//                     output.empty().html(data.exception)
+//                         .addClass('alert-danger')
+//                         .removeClass('alert-success')
+//                         .removeClass('hide');
+//                 }
+//             },
+//             error: function(xhr, status, error) {
+//                 console.error("XHR Error:", {
+//                     status: xhr.status,               // HTTP status code (e.g., 404, 500)
+//                     statusText: xhr.statusText,       // Status text (e.g., "Internal Server Error")
+//                     responseText: xhr.responseText,   // Full response from the server
+//                     errorMessage: error               // Error message, if any
+//                 });
+
+//                 output.empty().html("An error occurred: " + xhr.status + " " + xhr.statusText)
+//                     .addClass('alert-danger')
+//                     .removeClass('alert-success')
+//                     .removeClass('hide');
+
+//                 // Optionally, display the full response for debugging purposes
+//                 alert("Error: " + xhr.status + " - " + xhr.statusText + "\n" + xhr.responseText);
+//             }
+//         });
+//     });
+// });
+
 $(document).ready(function() {
     var frm = $("#gui_sale_insert");
     var output = $("#output");
 
+    // Function to calculate and set the `n_total` field
+    function calculateTotal() {
+        var grandTotal = parseFloat($("#grandTotal").val().replace(/\./g, '').replace('.', '')) || 0;
+        var previous = parseFloat($("#previous").val().replace(/\./g, '').replace('', '')) || 0;
+
+        // Calculate n_total
+        var n_total = grandTotal - previous;
+
+        // Display `n_total` in Indonesian format for user
+        $("#n_total_display").val(n_total.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+        // Store `n_total` in a hidden input without formatting for backend
+        $("#n_total").val(n_total.toFixed(2));
+
+        return n_total; // Return calculated total for use in AJAX if needed
+    }
+
+    // Trigger calculation whenever `grandTotal` or `previous` input changes
+    $("#grandTotal, #previous").on("input", calculateTotal);
+
     frm.on('submit', function(e) {
-        e.preventDefault(); 
+        e.preventDefault();
+
+        // Perform calculation before submission to ensure hidden `n_total` is accurate
+        calculateTotal();
+
         $.ajax({
             url: $(this).attr('action'),
             method: $(this).attr('method'),
@@ -801,11 +903,6 @@ $(document).ready(function() {
                     
                     $("#inv_id").val(data.invoice_id);
                     $('#printconfirmodal').modal('show');
-
-                    // Optional check for Enter key press (keyCode 13)
-                    if (data.status === true && event.keyCode === 13) {
-                        // Add logic here for Enter key action if needed
-                    }
                 } else {
                     output.empty().html(data.exception)
                         .addClass('alert-danger')
@@ -815,10 +912,10 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.error("XHR Error:", {
-                    status: xhr.status,               // HTTP status code (e.g., 404, 500)
-                    statusText: xhr.statusText,       // Status text (e.g., "Internal Server Error")
-                    responseText: xhr.responseText,   // Full response from the server
-                    errorMessage: error               // Error message, if any
+                    status: xhr.status,
+                    statusText: xhr.statusText,
+                    responseText: xhr.responseText,
+                    errorMessage: error
                 });
 
                 output.empty().html("An error occurred: " + xhr.status + " " + xhr.statusText)
@@ -826,12 +923,13 @@ $(document).ready(function() {
                     .removeClass('alert-success')
                     .removeClass('hide');
 
-                // Optionally, display the full response for debugging purposes
                 alert("Error: " + xhr.status + " - " + xhr.statusText + "\n" + xhr.responseText);
             }
         });
     });
 });
+
+
 
 
      $("#printconfirmodal").on('keydown', function ( e ) {

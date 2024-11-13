@@ -88,10 +88,7 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
 
                         <table width="100%">
                             <tr>
-                                <td align="center"><?php echo display('qty') ?></th>
-                                <td align="center"><?php echo display('medicine') ?></td>
-                                <td align="center"><?php echo display('price') ?></td>
-                                <td align="center"><?php echo display('discounts') ?></td>
+                                <td align="left">Item</td>
                                 <td align="right"><?php echo display('total') ?></td>
                             </tr>
                          
@@ -102,17 +99,18 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
                                          foreach($invoice_all_data as $details){?>
                             <tr>
 
-                                <td align="center"><nobr><?php
+                                
+                                <td align="left"><nobr><?php echo $details['product_name'].' - '.$details['strength'];
+                                            if($details['quantity'] < 0){
+                                                echo '('.' <span class="text-danger">Returned</span> '.')';
+                                            }?><nobr>
+<br><?php echo (($position==0)?"$currency ".$details['rate']."":"".$details['rate']." $currency") ?>
+<br>Qty : <?php
                                             if($details['quantity'] < 0){ echo $qty = -1*$details['quantity'];}else{
                                                 echo $qty = $details['quantity'];
                                             }
-                                              ?></nobr></td>
-                                <td align="center"><nobr><?php echo $details['product_name'].' - '.$details['strength'];
-                                            if($details['quantity'] < 0){
-                                                echo '('.' <span class="text-danger">Returned</span> '.')';
-                                            }?><nobr></td>
-                                <td align="center"><nobr><?php echo (($position==0)?"$currency ".$details['rate']."":"".$details['rate']." $currency") ?></nobr></td>
-                                    <?php
+                                              ?>
+                                              <br> Diskon : <?php
                                             if($details['quantity'] < 0){
                                              $discounts =  -1*$details['discount'];
                                              $tp = -1*$details['total_price'];
@@ -121,19 +119,19 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
                                             $discounts = $details['discount'];
                                             $tp = $details['total_price'];
                                             }
-                                             if ($discount_type == 1) { ?>
-                                            <td align="center"><?php echo $discounts;
-                                             $dis_amount = ($qty*$details['rate']*$discounts)/100;
-                                            ?></td>
-                                            <?php }elseif($discount_type == 2){ ?>
-                                            <td align="center"><?php echo (($position==0)?"$currency ".$discounts."":"".$discounts." $currency");
-                                            $dis_amount = $qty*$discounts;
-                                             ?></td>
-                                            <?php }else{ ?>
-                                                 <td align="center"><?php echo (($position==0)?"$currency ".$discounts."":"".$discounts." $currency");
+                                             if ($discount_type == 1) { echo $discounts;
+                                                $dis_amount = ($qty*$details['rate']*$discounts)/100;
+                                            }elseif($discount_type == 2){ 
+                                                echo (($position==0)?"$currency ".$discounts."":"".$discounts." $currency");
+                                                $dis_amount = $qty*$discounts;
+                                            }else{
+                                                echo (($position==0)?"$currency ".$discounts."":"".$discounts." $currency");
                                                  $dis_amount = $discounts;
-                                                  ?></td>
-                                            <?php }?>
+                                            }
+                                            ?>
+                                            </td>
+                             
+                                    
                                 
                                 <td align="right"><nobr><?php
                                              if($details['quantity'] < 0){ 
@@ -153,58 +151,53 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
                                <?php }?>
                             
                             <tr>
-                                <td colspan="5" class="minpos-bordertop"><nobr></nobr></td>
+                                <td colspan="3" class="minpos-bordertop"><nobr></nobr></td>
                             </tr>
                             <tr>
-                                <td align="left"><nobr></nobr></td>
-                                <td align="left" colspan="3"><nobr><?php echo display('sub_total') ?></nobr></td>
+                                <td align="left"><nobr><?php echo display('sub_total') ?></nobr></td>
                                 <td align="right"><nobr><?php echo (($position==0)?"$currency ".$subtotalamount: $subtotalamount." $currency") ?></nobr></td>
                             </tr>
                             <tr>
-                                <td colspan="5" class="minpos-bordertop"><nobr></nobr></td>
+                                <td colspan="3" class="minpos-bordertop"><nobr></nobr></td>
                             </tr>
                             <tr>
-                                <td align="left"><nobr></nobr></td>
-                                <td align="left" colspan="3"><nobr><?php echo display('tax') ?></nobr></td>
+                                <td align="left"><nobr><?php echo display('tax') ?></nobr></td>
                                 <td align="right"><nobr><?php echo (($position==0)?"$currency {total_tax}":"{total_tax} $currency") ?></nobr></td>
                             </tr>
                             <tr>
-                                <td align="left"><nobr></nobr></td>
-                                <td align="left" colspan="3"><nobr><?php echo display('invoice_discount') ?></nobr></td>
+                                <td align="left"><nobr><?php echo display('invoice_discount') ?></nobr></td>
                                 <td align="right"><nobr><?php echo (($position == 0) ? "$currency {invoice_discount}" : "{invoice_discount} $currency") ?></nobr></td>
                             </tr>
                             <tr>
-                                <td align="left"><nobr></nobr></td>
-                                <td align="left" colspan="3"><nobr><?php echo display('total_discount') ?></nobr></td>
+                                <td align="left"><nobr><?php echo display('total_discount') ?></nobr></td>
                                 <td align="right"><nobr><?php
                                                   $dis = $total_discount + $return_discount + $invoice_discount;
                                                  echo (($position == 0) ? "$currency ".$dis : $dis." $currency") ?></nobr></td>
                             </tr>
                             
                             <tr>
-                                <td colspan="5" class="minpos-bordertop"><nobr></nobr></td>
+                                <td colspan="3" class="minpos-bordertop"><nobr></nobr></td>
                             </tr>
                             <tr>
-                                <td align="left"><nobr></nobr></td>
-                                <td align="left" colspan="3"><nobr><strong><?php echo display('grand_total') ?></strong></nobr></td>
+                            
+                                <td align="left"><nobr><strong><?php echo display('grand_total') ?></strong></nobr></td>
                                 <td align="right"><nobr><strong><?php
                                             $tmnt = $total_amount-$return_amount;
                                              echo (($position == 0) ? "$currency ".$tmnt  : $tmnt." $currency") ?></strong></nobr></td>
                             </tr>
                             <tr>
-                                <td colspan="5" class="minpos-bordertop"><nobr></nobr></td>
+                                <td colspan="3" class="minpos-bordertop"><nobr></nobr></td>
                             </tr>
                             <tr>
-                                <td align="left"><nobr></nobr></td>
-                                <td align="left" colspan="3"><nobr><?php echo display('paid') ?></nobr></td>
+                               
+                                <td align="left"><nobr><?php echo display('paid') ?></nobr></td>
                                 <td align="right"><nobr><?php echo (($position==0)?"$currency {paid_amount}":"{paid_amount} $currency") ?></nobr></td>
                             </tr>
 
                             <tr>
-                                <td align="left"><nobr></nobr></td>
+                             
 
-
-                                <td align="left" colspan="3">
+                                <td align="left">
                                     <nobr>
                                         <?php
                                         $change=$paid_amount-$total_amount;

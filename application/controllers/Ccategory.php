@@ -1,6 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Ccategory extends CI_Controller {
 	public $menu;
+	private $userId;
 	function __construct() {
       parent::__construct();
 		$this->load->library('auth');
@@ -9,6 +10,8 @@ class Ccategory extends CI_Controller {
 		$this->load->model('Categories');
 		$this->auth->check_admin_auth();
 		$this->template->current_menu = 'category';
+		$this->load->model('LogModel');
+	    $this->userId = $this->session->userdata('user_id');
 	  
     }
 	//Default loading for Category system.
@@ -16,6 +19,7 @@ class Ccategory extends CI_Controller {
 	{
      $content = $this->lcategory->category_add_form();
 	//Here ,0 means array position 0 will be active class
+	 $this->LogModel->addLog($this->userId, 'Akses Kategori Obat');
 	 $this->template->full_admin_html_view($content);
 	}
 	//Product Add Form
@@ -40,7 +44,7 @@ class Ccategory extends CI_Controller {
 
 			//Previous balance adding -> Sending to customer model to adjust the data.			
 			$this->session->set_userdata(array('message'=>display('successfully_added')));
-			
+			$this->LogModel->addLog($this->userId, 'Input Kategori Obat',json_encode($data));
 				redirect(base_url('Ccategory'));
 				
 		
@@ -50,6 +54,7 @@ class Ccategory extends CI_Controller {
 	{	
 		$content = $this->lcategory->category_edit_data($category_id);
 		$this->menu=array('label'=> 'Edit Category', 'url' => 'Ccustomer');
+		$this->LogModel->addLog($this->userId, 'Akses Edit Kategori Obat');
 		$this->template->full_admin_html_view($content);
 	}
 	// customer Update
@@ -65,6 +70,7 @@ class Ccategory extends CI_Controller {
 
 		$this->Categories->update_category($data,$category_id);
 		$this->session->set_userdata(array('message'=>display('successfully_updated')));
+		$this->LogModel->addLog($this->userId, 'Update Kategori Obat',json_encode($data));
 		redirect(base_url('Ccategory/index'));
 		exit;
 	}
@@ -72,8 +78,10 @@ class Ccategory extends CI_Controller {
 	public function category_delete($category_id)
 {
     $this->load->model('Categories');
+	$data = $this->lcategory->category_edit_data($category_id);
     $this->Categories->delete_category($category_id);
     $this->session->set_userdata(array('message'=>display('successfully_delete')));
+	$this->LogModel->addLog($this->userId, 'Delete Kategori Obat',json_encode($data));
  	redirect(base_url('Ccategory/index'));
 
 }
