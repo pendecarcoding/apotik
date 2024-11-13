@@ -65,7 +65,7 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
             #printableArea {
                 width: 44mm;
                 page-break-after: always;
-                font-size: 10pt;
+                font-size: 7pt;
                 margin: 0;
                 padding: 0;
             }
