@@ -2,11 +2,14 @@
 class Cproduct extends CI_Controller {
 	
 	public $product_id;
+	private $userId;
 	function __construct() {
       parent::__construct();
      $this->load->library('auth');
 	$this->load->model('Manufacturers');
 	$this->auth->check_admin_auth();
+	$this->load->model('LogModel');
+	$this->userId = $this->session->userdata('user_id');
     }
 
     //Index page load
@@ -586,6 +589,7 @@ class Cproduct extends CI_Controller {
 
 	//Calling Customer add form which will be loaded by help of "lcustomer,located in library folder"
 	$content = $this->lproduct->type_add_form();
+	$this->LogModel->addLog($this->userId, 'Akses Jenis Obat');
 	$this->template->full_admin_html_view($content);
 	}
 	//Product Add Form
@@ -614,6 +618,7 @@ class Cproduct extends CI_Controller {
 
 		$result=$this->Products->type_entry($data);
 		if ($result == TRUE) {
+			$this->LogModel->addLog($this->userId, 'Input Jenis Obat',json_encode($data));
 			//Previous balance adding -> Sending to customer model to adjust the data.			
 			$this->session->set_userdata(array('message'=>display('successfully_added')));
 			if(isset($_POST['add-customer'])){
@@ -637,6 +642,7 @@ class Cproduct extends CI_Controller {
 
 		$content = $this->lproduct->type_edit_data($type_id);
 		$this->menu=array('label'=> 'Edit type', 'url' => 'Cproduct/typeindex');
+		$this->LogModel->addLog($this->userId, 'Update Jenis Obat',json_encode($content));
 		$this->template->full_admin_html_view($content);
 	}
 	// customer Update
@@ -650,7 +656,7 @@ class Cproduct extends CI_Controller {
 			'type_name' => $this->input->post('type_name',true),
 			'status' 	=> $this->input->post('status',true),
 			);
-
+		$this->LogModel->addLog($this->userId, 'Berhasil Update Jenis Obat',json_encode($data));
 		$this->Products->update_type($data,$type_id);
 		$this->session->set_userdata(array('message'=>display('successfully_updated')));
 		redirect(base_url('Cproduct/typeindex'));
@@ -663,8 +669,10 @@ class Cproduct extends CI_Controller {
 		$CI->load->model('Products');
 		$CI->load->library('lproduct');	
 		$this->load->model('Products');
+		$content = $this->lproduct->type_edit_data($type_id);
         $result = $CI->Products->delete_type($type_id);
 		$this->session->set_userdata(array('message'=>display('successfully_delete')));
+		$this->LogModel->addLog($this->userId, 'Berhasil Delete Jenis Obat',json_encode($content));
 		redirect(base_url('Cproduct/typeindex'));
 		exit;
 			

@@ -39,8 +39,9 @@ class Cinvoice extends CI_Controller {
             $data['invoice_id'] = $invoice_id;
             $data['details'] = $this->load->view('invoice/invoice_html', $data, true);
             $data['message'] = display('save_successfully');
-			$this->LogModel->addLog($this->userId, 'Aksi Pembayaran Menu Faktur Baru',json_encode($data));
+			$this->LogModel->addLog($this->userId, 'Berhasil Menambahkan Penjualan',json_encode($data));
         }else{
+		   $this->LogModel->addLog($this->userId, 'Gagal Menambahkan Penjualan',json_encode($data));
            $data['status'] = false;
            $data['error_message'] = 'Sorry';
 
@@ -181,6 +182,7 @@ class Cinvoice extends CI_Controller {
 		$CI->auth->check_admin_auth();
 		$CI->load->library('linvoice');
 		$content = $CI->linvoice->pos_invoice_add_form();
+		$this->LogModel->addLog($this->userId, 'Akses Faktur Baru POS');
 		$this->template->full_admin_html_view($content);
 	}
 
@@ -282,7 +284,9 @@ class Cinvoice extends CI_Controller {
                             <a style=\"text-align: right;\" class=\"btn btn-danger\"   onclick=\"deleteRow(this)\"><i class='fa fa-close'></i></a>
 						</td>
 					</tr>";
+			
 			echo $tr;
+			
 
 		}else{
 			echo  $tr;
@@ -603,7 +607,9 @@ class Cinvoice extends CI_Controller {
 			$data['position']        = $currency_details[0]['currency_position'];
             $data['taxnumber']    = $num_column;
             $data['todays_invoice']= $this->Invoices->todays_invoice();
+			$this->LogModel->addLog($this->userId, 'Akses Faktur GUI POS');
             $content  = $this->parser->parse('invoice/gui_pos_invoice', $data, true);
+			
      $this->template->full_admin_html_view($content);  
         }
 

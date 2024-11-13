@@ -257,6 +257,8 @@ public function pos_invoice_setup($product_id){
 	//Count invoice
 	public function invoice_entry()
 	{
+		$this->db->trans_start(); // Start transaction
+
 		$tablecolumn = $this->db->list_fields('tax_collection');
         $num_column = count($tablecolumn)-4;
 		$invoice_id = $this->generator(10);
@@ -319,11 +321,14 @@ public function pos_invoice_setup($product_id){
 	
 
 		//Data inserting into invoice table
+		$grand_total_price = $this->input->post('grand_total_price',true);
+		$grand_total_price = str_replace(['.', ','], ['', '.'], $grand_total_price);
+        $grand_total_price = (float) $grand_total_price;
 		$datainv=array(
 			'invoice_id'		=>	$invoice_id,
 			'customer_id'		=>	$customer_id,
 			'date'				=>	$this->input->post('invoice_date',true),
-			'total_amount'		=>	$this->input->post('grand_total_price',true),
+			'total_amount'		=>	$grand_total_price,
 			'total_tax'			=>	$this->input->post('total_tax',true),
 			'invoice'			=>	$this->number_generator(),
 			'invoice_details'   =>  $this->input->post('inva_details',true),
@@ -349,7 +354,9 @@ public function pos_invoice_setup($product_id){
         }
 		
 
-			$paid_amount=$this->input->post('paid_amount',true);
+			$paid_amount = $this->input->post('paid_amount',true);
+			$paid_amount = str_replace(['.', ','], ['', '.'], $paid_amount);
+            $paid_amount = (float) $paid_amount;
 
 
 		
@@ -374,7 +381,7 @@ public function pos_invoice_setup($product_id){
       'VDate'          =>  $createdate,
       'COAID'          =>  1020101,
       'Narration'      =>  'Cash in Hand For Invoice No'.$invoice_id,
-      'Debit'          =>  $this->input->post('paid_amount',true),
+      'Debit'          =>  $paid_amount,
       'Credit'         =>  0,
       'IsPosted'       =>  1,
       'CreateBy'       =>  $createby,
@@ -388,7 +395,7 @@ public function pos_invoice_setup($product_id){
       'VDate'          =>  $createdate,
       'COAID'          =>  $bankcoaid,
       'Narration'      =>  'Paid amount for Invoice No '.$invoice_id,
-      'Debit'          =>  $this->input->post('paid_amount',true),
+      'Debit'          =>  $paid_amount,
       'Credit'         =>  0,
       'IsPosted'       =>  1,
       'CreateBy'       =>  $createby,
@@ -451,7 +458,7 @@ public function pos_invoice_setup($product_id){
       'COAID'          =>  $customer_headcode,
       'Narration'      =>  'Customer credit for Paid Amount For Invoice No'.$invoice_id,
       'Debit'          =>  0,
-      'Credit'         =>  $this->input->post('paid_amount',true),
+      'Credit'         =>  $paid_amount,
       'IsPosted'       => 1,
       'CreateBy'       => $createby,
       'CreateDate'     => $createdate,
@@ -496,7 +503,7 @@ public function pos_invoice_setup($product_id){
 				'rate'					=>	$product_rate,
 				'discount'           	=>	$discount,
 				'tax'           		=>	$tax,
-				'paid_amount'           =>	$this->input->post('paid_amount',true),
+				'paid_amount'           =>	$paid_amount,
 				'due_amount'           	=>	$this->input->post('due_amount',true),
 				'manufacturer_rate'     =>	$manufacturer_rate[0]['manufacturer_price'],
 				'total_price'           =>	$total_price,
@@ -509,10 +516,10 @@ public function pos_invoice_setup($product_id){
 				$this->db->insert('invoice_details',$data1);
 			}
 		}
-	
+	   $this->db->trans_complete();
 	   $currency_details = $this->Web_settings->retrieve_setting_editdata();
 		 $message = 'Mr/Mrs. '.$customerinfo->customer_name.',
-        '.'You have purchase  '.$this->input->post('grand_total_price',true).' '. $currency_details[0]['currency'].' You have paid .'.$this->input->post('paid_amount',true).' '. $currency_details[0]['currency'];
+        '.'You have purchase  '.$this->input->post('grand_total_price',true).' '. $currency_details[0]['currency'].' You have paid .'.$paid_amount.' '. $currency_details[0]['currency'];
            $config_data = $this->db->select('*')->from('sms_settings')->get()->row();
         if($config_data->isinvoice == 1){
           $this->smsgateway->send([
