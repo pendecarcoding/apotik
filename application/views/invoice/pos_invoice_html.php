@@ -181,77 +181,77 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
                                             <td align="left" colspan="2">
                                                 <nobr>Sub Total</nobr>
                                             </td>
-                                            <td align="right">
-                                                <nobr><?php echo (($position==0)?"$currency ".$subtotalamount: $subtotalamount." $currency") ?></nobr>
+                                            <td align="left">
+                                                <?php echo (($position==0)?"$currency ".$subtotalamount: $subtotalamount." $currency") ?>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td align="left" colspan="2">
                                                 <nobr>Pajak</nobr>
                                             </td>
-                                            <td align="right">
-                                                <nobr><?php echo (($position==0)?"$currency {total_tax}":"{total_tax} $currency") ?></nobr>
+                                            <td align="left">
+                                                <?php echo (($position==0)?"$currency {total_tax}":"{total_tax} $currency") ?>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td align="left" colspan="2">
                                                 <nobr>Diskon Faktur</nobr>
                                             </td>
-                                            <td align="right">
-                                                <nobr><?php echo (($position == 0) ? "$currency {invoice_discount}" : "{invoice_discount} $currency") ?></nobr>
+                                            <td align="left">
+                                                <?php echo (($position == 0) ? "$currency {invoice_discount}" : "{invoice_discount} $currency") ?>
                                             </td>
                                         </tr>
                                         <tr class="border-bottom">
                                             <td align="left" colspan="2">
-                                                <nobr>Diskon Total</nobr>
+                                                Diskon Total
                                             </td>
-                                            <td align="right">
-                                                <nobr><?php
+                                            <td align="left">
+                                               <?php
                                                   $dis = $total_discount + $return_discount + $invoice_discount;
-                                                 echo (($position == 0) ? "$currency ".$dis : $dis." $currency") ?></nobr>
+                                                 echo (($position == 0) ? "$currency ".$dis : $dis." $currency") ?>
                                             </td>
                                         </tr>
                                         <tr class="border-bottom">
 
                                             <td align="left" colspan="2">
-                                                <nobr><strong>Hasil akhir</strong></nobr>
+                                                <strong>Hasil akhir</strong>
                                             </td>
-                                            <td align="right">
-                                                <nobr><strong><?php
+                                            <td align="left">
+                                                <strong><?php
                                             $tmnt = $total_amount-$return_amount;
-                                             echo (($position == 0) ? "$currency ".$tmnt  : $tmnt." $currency") ?></strong></nobr>
+                                             echo (($position == 0) ? "$currency ".$tmnt  : $tmnt." $currency") ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+                                            <td colspan="2">
+                                                Berbayar
+                                            </td>
+                                            <td>
+                                                <?php echo (($position==0)?"$currency {paid_amount}":"{paid_amount} $currency") ?>
                                             </td>
                                         </tr>
                                         <tr>
 
                                             <td align="left" colspan="2">
-                                                <nobr>Berbayar</nobr>
-                                            </td>
-                                            <td align="right">
-                                                <nobr><?php echo (($position==0)?"$currency {paid_amount}":"{paid_amount} $currency") ?></nobr>
-                                            </td>
-                                        </tr>
-                                        <tr>
-
-                                            <td align="left" colspan="2">
-                                                <nobr> <?php
+                                                <?php
                                         $change=$paid_amount-$total_amount;
                                         if($change > 0){
                                             echo 'Kembalian';
                                         }else{
                                             echo 'Kembalian';
                                         }
-                                        ?></nobr>
+                                        ?>
                                             </td>
-                                            <td align="right">
-                                                <nobr><?php
+                                            <td align="left">
+                                                <?php
                                         $change=$paid_amount-$total_amount;
                                         if($change > 0){
                                             echo number_format($change,2);
                                         }else{
                                              $due = $tmnt - $paid_amount;
                                                  echo (($position == 0) ? "$currency ".$due : $due."{due_amount} $currency");
-                                        }?></nobr>
+                                        }?>
                                             </td>
                                         </tr>
                                         <tr>
