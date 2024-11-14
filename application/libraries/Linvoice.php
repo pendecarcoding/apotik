@@ -303,16 +303,6 @@ public function invoice_edit_data($invoice_id)
 		$CI->load->model('Web_settings');
 		$CI->load->library('occational');
 		$invoice_detail = $CI->Invoices->retrieve_invoice_html_data($invoice_id);
-        $taxfield = $CI->db->select('*')
-                ->from('tax_settings')
-                ->where('is_show',1)
-                ->get()
-                ->result_array();
-        $txregname ='';
-        foreach($taxfield as $txrgname){
-        $regname = $txrgname['tax_name'].' Reg No  - '.$txrgname['reg_no'].', ';
-        $txregname .= $regname;
-        }       
 	
 		$subTotal_quantity = 0;
 		$subTotal_cartoon = 0;
@@ -334,31 +324,33 @@ public function invoice_edit_data($invoice_id)
 		$currency_details = $CI->Web_settings->retrieve_setting_editdata();
 		$company_info = $CI->Invoices->retrieve_company();
 		$data=array(
-			'title'				=>	display('invoice_details'),
+			'ttile'				=>	display('invoice_details'),
 			'invoice_id'		=>	$invoice_detail[0]['invoice_id'],
 			'invoice_no'		=>	$invoice_detail[0]['invoice'],
 			'invoice_discount'	=>	number_format($invoice_detail[0]['invoice_discount'], 2, '.', ','),
+
 			'customer_name'		=>	$invoice_detail[0]['customer_name'],
 			'customer_address'	=>	$invoice_detail[0]['customer_address'],
 			'customer_mobile'	=>	$invoice_detail[0]['customer_mobile'],
 			'customer_email'	=>	$invoice_detail[0]['customer_email'],
 			'final_date'		=>	$invoice_detail[0]['final_date'],
-			'invoice_details'  =>   $invoice_detail[0]['invoice_details'],
-			'total_amount'		=>	number_format($invoice_detail[0]['total_amount'], 2, '.', ','),
+			'invoice_details'   =>   $invoice_detail[0]['invoice_details'],
+
+			'total_amount'		=>	$invoice_detail[0]['total_amount'],
+			'subTotal_cartoon'	=>	$subTotal_cartoon,
 			'subTotal_quantity'	=>	$subTotal_quantity,
 			'total_discount'	=>	number_format($invoice_detail[0]['total_discount'], 2, '.', ','),
 			'total_tax'			=>	number_format($invoice_detail[0]['total_tax'], 2, '.', ','),
 			'subTotal_ammount'	=>	number_format($subTotal_ammount, 2, '.', ','),
-			'paid_amount'		=>	number_format($invoice_detail[0]['paid_amount'], 2, '.', ','),
+			'paid_amount'		=>	$invoice_detail[0]['paid_amount'],
 			'due_amount'		=>	number_format($invoice_detail[0]['due_amount'], 2, '.', ','),
-			 'previous'         => number_format($invoice_detail[0]['prevous_due'], 2, '.', ','),
+			'previous'         => number_format($invoice_detail[0]['prevous_due'], 2, '.', ','),
 			'invoice_all_data'	=>	$invoice_detail,
 			'company_info'		=>	$company_info,
-			'currency' 			=> 	$currency_details[0]['currency'],
-			'position' 			=> 	$currency_details[0]['currency_position'],
-			'discount_type'  	=> $currency_details[0]['discount_type'],
-			'tax_regno'         => $txregname,
-		);
+			'currency' 			=> $currency_details[0]['currency'],
+			'position' 			=> $currency_details[0]['currency_position'],
+			'discount_type'  	=>  $currency_details[0]['discount_type'],
+			);
 
 		$chapterList = $CI->parser->parse('invoice/invoice_html_manual',$data,true);
 		return $chapterList;

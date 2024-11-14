@@ -52,12 +52,18 @@ class Cinvoice extends CI_Controller {
 
 
       public function invoice_inserted_data_manual() {
-        $CI = & get_instance();
-        $CI->auth->check_admin_auth();
-        $CI->load->library('linvoice');
-        $invoice_id = $this->input->post('invoice_id',true);
-        $content = $CI->linvoice->invoice_html_data_manual($invoice_id);
-        $this->template->full_admin_html_view($content);
+		try {
+			$CI = & get_instance();
+			$CI->auth->check_admin_auth();
+			$CI->load->library('linvoice');
+			$invoice_id = $this->input->post('invoice_id',true);
+			$content = $CI->linvoice->invoice_html_data_manual($invoice_id);
+			$this->template->full_admin_html_view($content);
+			//generate_pdf($content, "invoice_$invoice_id.pdf", true);
+		} catch (\Throwable $th) {
+			print $th->getMessage();
+		}
+        
     }
     public function pos_invoice_inserted_data_manual() {
        $CI = & get_instance();

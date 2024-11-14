@@ -1,6 +1,3 @@
-
-
-
 <?php
 $CI =& get_instance();
 $CI->load->model('Web_settings');
@@ -34,83 +31,114 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
         $message = $this->session->userdata('message');
         if (isset($message)) {
             ?>
-            <div class="alert alert-info alert-dismissable">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                <?php echo $message ?>
-            </div>
-            <?php
+        <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <?php echo $message ?>
+        </div>
+        <?php
             $this->session->unset_userdata('message');
         }
         $error_message = $this->session->userdata('error_message');
         if (isset($error_message)) {
             ?>
-            <div class="alert alert-danger alert-dismissable">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                <?php echo $error_message ?>
-            </div>
-            <?php
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <?php echo $error_message ?>
+        </div>
+        <?php
             $this->session->unset_userdata('error_message');
         }
         ?>
 
         <?php
         if($this->permission1->method('pos_invoice', 'read')->access()){ ?>
+        
+
         <body>
-              <div class="row">
-            <div class="col-sm-6">
-                <div class="panel panel-bd">
-                    <div>
-                        <div class="panel-body" id="printableArea">
-                            <div bgcolor='#e4e4e4' text='#ff6633' link='#666666' vlink='#666666' alink='#ff6633' >
-                <tr>
-                    <td>
-                        <table border="0" width="100%" >
-                            <tr>
-                                {company_info}
-                                <td align="center" class="print_header"><span>
-                                        <img src="<?php if (isset($Web_settings[0]['invoice_logo'])) {echo $Web_settings[0]['invoice_logo']; }?>" class="" alt=""></span><br>
-                                    {address}<br>
-                                    {mobile}
-                                </td>
-                                {/company_info}
-                            </tr>
-                            <tr>
-                                <td align="center"><b>{customer_name}</b><br>
-                                    {customer_address}
+            <div class="row">
+                <center>
+                <div class="printwrap">
+                    <div style="padding:20px" class="panel panel-bd">
+                        <div>
+                            <div class="panel-body" id="printableArea">
+                            <style>
+            #printableArea {
+                width: 44mm;
+                page-break-after: always;
+                font-size: 7pt;
+                margin: 0;
+                padding: 0;
+            }
+
+            .printwrap {
+                width: 100%;
+                page-break-after: always;
+                font-size: 10pt;
+                margin: 0;
+                padding: 0;
+            }
+
+            .page {
+                width: 44mm;
+                page-break-after: always;
+            }
+
+            .border-bottom td {
+                border-bottom: 1px solid black;
+                border-collapse: collapse;
+            }
+
+            table {
+                border-spacing: 0px;
+            }
+        </style>
+                                <table border="0" width="100%">
+                                    <tbody>
+                                        <tr>
+                                        {company_info}
+                                            <td align="center" class="print_header"><span>
+                                            <img src="<?php if (isset($Web_settings[0]['invoice_logo'])) {echo $Web_settings[0]['invoice_logo']; }?>" class="" alt="">
+                                                        </span><br>
+                                                        {address}<br>
+                                                        {mobile}
+                                            </td>
+                                            {/company_info}
+                                        </tr>
+                                        <tr>
+                                            <td align="center"> <b>{customer_name}</b><br>
+
+                                            {customer_address}
                                     <br>
                                     {customer_mobile}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center"><nobr><date>Date:{final_date}<time></nobr></td>
-                            </tr>
-                        </table>
 
-                        <table width="100%">
-                            <tr>
-                                <td align="left">Item</td>
-                                <td align="right"><?php echo display('total') ?></td>
-                            </tr>
-                         
-                            <?php 
+                                    <nobr>
+                                                    <date>Date:{final_date}<time></time></date>
+                                                </nobr>
+
+                                            </td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                <table>
+                                    <thead>
+                                        <tr class="border-bottom">
+                                            <td colspan="2" align="left">Item</td>
+                                            <td align="left">Total</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php 
                                         $subtotalamount = 0;
                                         $return_discount = 0;
                                         $return_amount = 0;
                                          foreach($invoice_all_data as $details){?>
-                            <tr>
-
-                                
-                                <td align="left"><nobr><?php echo $details['product_name'].' - '.$details['strength'];
-                                            if($details['quantity'] < 0){
-                                                echo '('.' <span class="text-danger">Returned</span> '.')';
-                                            }?><nobr>
-<br><?php echo (($position==0)?"$currency ".$details['rate']."":"".$details['rate']." $currency") ?>
-<br>Qty : <?php
-                                            if($details['quantity'] < 0){ echo $qty = -1*$details['quantity'];}else{
+                                        <tr class="border-bottom">
+                                            <td colspan="2" align="left"><?php echo $details['product_name']; ?><br> Harga : <?php echo (($position==0)?"$currency ".$details['rate']."":"".$details['rate']." $currency") ?>
+                                            <br> Qty : <?php if($details['quantity'] < 0){ echo $qty = -1*$details['quantity'];}else{
                                                 echo $qty = $details['quantity'];
-                                            }
-                                              ?>
-                                              <br> Diskon : <?php
+                                            } ?>
+                                            <br> Diskon : <?php
                                             if($details['quantity'] < 0){
                                              $discounts =  -1*$details['discount'];
                                              $tp = -1*$details['total_price'];
@@ -129,11 +157,9 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
                                                  $dis_amount = $discounts;
                                             }
                                             ?>
-                                            </td>
-                             
-                                    
-                                
-                                <td align="right"><nobr><?php
+
+                                        </td>
+                                            <td align="left"><?php
                                              if($details['quantity'] < 0){ 
                                                  $totalprice = $tp - $dis_amount;
                                                  $subtotalamount -= $totalprice;
@@ -145,73 +171,79 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
                                             }
 
                                            
-                                             echo (($position==0)?"$currency ".$totalprice."":"".$totalprice." $currency") ?></nobr></td>
-
-                            </tr>
-                               <?php }?>
-                            
-                            <tr>
-                                <td colspan="3" class="minpos-bordertop"><nobr></nobr></td>
-                            </tr>
-                            <tr>
-                                <td align="left"><nobr><?php echo display('sub_total') ?></nobr></td>
-                                <td align="right"><nobr><?php echo (($position==0)?"$currency ".$subtotalamount: $subtotalamount." $currency") ?></nobr></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="minpos-bordertop"><nobr></nobr></td>
-                            </tr>
-                            <tr>
-                                <td align="left"><nobr><?php echo display('tax') ?></nobr></td>
-                                <td align="right"><nobr><?php echo (($position==0)?"$currency {total_tax}":"{total_tax} $currency") ?></nobr></td>
-                            </tr>
-                            <tr>
-                                <td align="left"><nobr><?php echo display('invoice_discount') ?></nobr></td>
-                                <td align="right"><nobr><?php echo (($position == 0) ? "$currency {invoice_discount}" : "{invoice_discount} $currency") ?></nobr></td>
-                            </tr>
-                            <tr>
-                                <td align="left"><nobr><?php echo display('total_discount') ?></nobr></td>
-                                <td align="right"><nobr><?php
-                                                  $dis = $total_discount + $return_discount + $invoice_discount;
-                                                 echo (($position == 0) ? "$currency ".$dis : $dis." $currency") ?></nobr></td>
-                            </tr>
-                            
-                            <tr>
-                                <td colspan="3" class="minpos-bordertop"><nobr></nobr></td>
-                            </tr>
-                            <tr>
-                            
-                                <td align="left"><nobr><strong><?php echo display('grand_total') ?></strong></nobr></td>
-                                <td align="right"><nobr><strong><?php
-                                            $tmnt = $total_amount-$return_amount;
-                                             echo (($position == 0) ? "$currency ".$tmnt  : $tmnt." $currency") ?></strong></nobr></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="minpos-bordertop"><nobr></nobr></td>
-                            </tr>
-                            <tr>
-                               
-                                <td align="left"><nobr><?php echo display('paid') ?></nobr></td>
-                                <td align="right"><nobr><?php echo (($position==0)?"$currency {paid_amount}":"{paid_amount} $currency") ?></nobr></td>
-                            </tr>
-
-                            <tr>
-                             
-
-                                <td align="left">
-                                    <nobr>
+                                             echo (($position==0)?"$currency ".$totalprice."":"".$totalprice." $currency") ?></td>
+                                        </tr>
                                         <?php
+                                         }
+                                        ?>
+                                        <tr class="border-bottom">
+                                            <td align="left" colspan="2">
+                                                <nobr>Sub Total</nobr>
+                                            </td>
+                                            <td align="left">
+                                                <?php echo (($position==0)?"$currency ".$subtotalamount: $subtotalamount." $currency") ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left" colspan="2">
+                                                <nobr>Pajak</nobr>
+                                            </td>
+                                            <td align="left">
+                                                <?php echo (($position==0)?"$currency {total_tax}":"{total_tax} $currency") ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left" colspan="2">
+                                                <nobr>Diskon Faktur</nobr>
+                                            </td>
+                                            <td align="left">
+                                                <?php echo (($position == 0) ? "$currency {invoice_discount}" : "{invoice_discount} $currency") ?>
+                                            </td>
+                                        </tr>
+                                        <tr class="border-bottom">
+                                            <td align="left" colspan="2">
+                                                Diskon Total
+                                            </td>
+                                            <td align="left">
+                                               <?php
+                                                  $dis = $total_discount + $return_discount + $invoice_discount;
+                                                 echo (($position == 0) ? "$currency ".$dis : $dis." $currency") ?>
+                                            </td>
+                                        </tr>
+                                        <tr class="border-bottom">
+
+                                            <td align="left" colspan="2">
+                                                <strong>Hasil akhir</strong>
+                                            </td>
+                                            <td align="left">
+                                                <strong><?php
+                                            $tmnt = $total_amount-$return_amount;
+                                             echo (($position == 0) ? "$currency ".$tmnt  : $tmnt." $currency") ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+                                            <td colspan="2">
+                                                Berbayar
+                                            </td>
+                                            <td>
+                                                <?php echo (($position==0)?"$currency {paid_amount}":"{paid_amount} $currency") ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+                                            <td align="left" colspan="2">
+                                                <?php
                                         $change=$paid_amount-$total_amount;
                                         if($change > 0){
-                                            echo 'Change';
+                                            echo 'Kembalian';
                                         }else{
-                                            echo 'Due';
+                                            echo 'Kembalian';
                                         }
                                         ?>
-                                    </nobr>
-                                </td>
-                                <td align="right">
-                                    <nobr>
-                                     <?php
+                                            </td>
+                                            <td align="left">
+                                                <?php
                                         $change=$paid_amount-$total_amount;
                                         if($change > 0){
                                             echo number_format($change,2);
@@ -219,55 +251,61 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
                                              $due = $tmnt - $paid_amount;
                                                  echo (($position == 0) ? "$currency ".$due : $due."{due_amount} $currency");
                                         }?>
-                                    </nobr>
-                                </td>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Receipt No:{invoice_no}</td>
+                                            <td></td>
+                                            <td>Kasir : <?php echo $this->session->userdata('user_name');?></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                            </tr>
-                            <tr>
-                                <td colspan="5" class="minpos-bordertop"><nobr></nobr></td>
-                            </tr>
-                        </table>
-                        <table width="100%">
-                            <tr>
-                                <td>Receipt  No:{invoice_no}</td>
-                                <td>User: <?php echo $this->session->userdata('user_name');?></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td>{company_info}
-                        Powered  By: {company_name}, {email}
-                        {/company_info}
-                    </td>
-                </tr>
-            </table>
-        </div>
-       
-        </div>
-         <div class="panel-footer text-left">
-            <a  class="btn btn-danger" href="<?php echo base_url('Cinvoice');?>"><?php echo display('cancel') ?></a>
-            <button  class="btn btn-info" onclick="printDiv('printableArea')"><span class="fa fa-print"></span></button>
 
-        </div>
-        </div>
-        </div>
-        </div>
+
+
+                            </div>
+                            <div class="panel-footer text-left">
+                                <!-- <a  class="btn btn-danger" href="<?php echo base_url('Cinvoice');?>"><?php echo display('cancel') ?></a> -->
+                                <button class="btn btn-info" onclick="printDiv('printableArea')"><span
+                                        class="fa fa-print"></span></button>
+
+                            </div>
+                        </div>
+                    </div>
+                    </center>
+                </div>
         </body>
         <?php
         }
         else{
             ?>
-            <div class="col-sm-12">
-                <div class="panel panel-bd lobidrag">
-                    <div class="panel-heading">
-                        <div class="panel-title">
-                            <h4><?php echo display('You do not have permission to access. Please contact with administrator.');?></h4>
-                        </div>
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h4><?php echo display('You do not have permission to access. Please contact with administrator.');?>
+                        </h4>
                     </div>
                 </div>
             </div>
-    <?php
+        </div>
+        <?php
         }
         ?>
     </section> <!-- /.content -->
