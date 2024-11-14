@@ -123,9 +123,8 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
                                 <table>
                                     <thead>
                                         <tr class="border-bottom">
-                                            <td style="width:20%">Qty</td>
-                                            <td align="left">Item</td>
-                                            <td align="right">Total</td>
+                                            <td colspan="2" align="left">Item</td>
+                                            <td align="left">Total</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -135,11 +134,10 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
                                         $return_amount = 0;
                                          foreach($invoice_all_data as $details){?>
                                         <tr class="border-bottom">
-                                            <td> <?php if($details['quantity'] < 0){ echo $qty = -1*$details['quantity'];}else{
+                                            <td colspan="2" align="left"><?php echo $details['product_name']; ?><br> Harga : <?php echo (($position==0)?"$currency ".$details['rate']."":"".$details['rate']." $currency") ?>
+                                            <br> Qty : <?php if($details['quantity'] < 0){ echo $qty = -1*$details['quantity'];}else{
                                                 echo $qty = $details['quantity'];
-                                            } ?></td>
-                                            <td align="left"><?php echo $details['product_name']; ?><br> Harga : <?php echo (($position==0)?"$currency ".$details['rate']."":"".$details['rate']." $currency") ?>
-                                        
+                                            } ?>
                                             <br> Diskon : <?php
                                             if($details['quantity'] < 0){
                                              $discounts =  -1*$details['discount'];
@@ -159,8 +157,9 @@ $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
                                                  $dis_amount = $discounts;
                                             }
                                             ?>
+
                                         </td>
-                                            <td align="right"><?php
+                                            <td align="left"><?php
                                              if($details['quantity'] < 0){ 
                                                  $totalprice = $tp - $dis_amount;
                                                  $subtotalamount -= $totalprice;
