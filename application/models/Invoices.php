@@ -612,7 +612,7 @@ public function retrieve_invoice_editdata($invoice_id)
 		    'invoice_id'        =>  $invoice_id,
 			'customer_id'		=>	$this->input->post('customer_id',true),
 			'date'				=>	$this->input->post('invoice_date',true),
-			'total_amount'		=>	$this->input->post('grand_total_price',true),
+			'total_amount'		=>	str_replace('.','',$this->input->post('grand_total_price',true)),
 			'total_tax'			=>	$this->input->post('total_tax',true),
 			'invoice_details'   =>  $this->input->post('inva_details',true),
 			'total_discount' 	=> 	$this->input->post('total_discount',true),
@@ -779,7 +779,7 @@ public function retrieve_invoice_editdata($invoice_id)
         $quantity 		= $this->input->post('product_quantity',true);
 		$rate 			= $this->input->post('product_rate',true);
 		$p_id 			= $this->input->post('product_id',true);
-		$total_amount 	= $this->input->post('total_price',true);
+		$total_amount 	= str_replace('.','',$this->input->post('total_price',true));
 		$discount_rate 	= $this->input->post('discount',true);
 		$batch_id 	    = $this->input->post('batch_id',true);
 		$tax_amount 	= $this->input->post('tax',true);
@@ -808,7 +808,7 @@ public function retrieve_invoice_editdata($invoice_id)
 				'discount'		=>	$discount,
 				'total_price'	=>	$total_price,
 				'tax'   		=>	$tax,
-				'paid_amount'   =>	$this->input->post('paid_amount',true),
+				'paid_amount'   =>	str_replace('.','',$this->input->post('paid_amount',true)),
 				'due_amount'    =>	$this->input->post('due_amount',true),
 			);
 			$this->db->insert('invoice_details',$data1);
