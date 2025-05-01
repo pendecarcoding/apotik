@@ -787,13 +787,6 @@ public function retrieve_invoice_editdata($invoice_id)
   }
 
 		$totalPrice = $this->input->post('total_price', true);
-		if(strpos($totalPrice,'.') !== false){
-			$totalPrice = str_replace('.', '', $totalPrice);
-		}
-		
-		$totalPrice = substr($totalPrice, 0, -2);
-		
-
         $invoice_d_id 	= $this->input->post('invoice_details_id',true);
         $cartoon 		= $this->input->post('cartoon',true);
         $quantity 		= $this->input->post('product_quantity',true);
