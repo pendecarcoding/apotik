@@ -321,14 +321,15 @@ public function pos_invoice_setup($product_id){
 	
 
 		//Data inserting into invoice table
-		$grand_total_price = $this->input->post('grand_total_price',true);
-		$grand_total_price = str_replace(['.', ','], ['', '.'], $grand_total_price);
-        $grand_total_price = (float) $grand_total_price;
+		$totalAmount = $this->input->post('grand_total_price',true);
+		if (is_numeric($totalAmount) && floor($totalAmount) == $totalAmount) {
+					$totalAmount = intval($totalAmount);
+		}
 		$datainv=array(
 			'invoice_id'		=>	$invoice_id,
 			'customer_id'		=>	$customer_id,
 			'date'				=>	$this->input->post('invoice_date',true),
-			'total_amount'		=>	$grand_total_price,
+			'total_amount'		=>	$totalAmount,
 			'total_tax'			=>	$this->input->post('total_tax',true),
 			'invoice'			=>	$this->number_generator(),
 			'invoice_details'   =>  $this->input->post('inva_details',true),
@@ -591,9 +592,9 @@ public function retrieve_invoice_editdata($invoice_id)
         $createby=$this->session->userdata('user_id');
         $quantity = $this->input->post('product_quantity',true);
         $createdate=date('Y-m-d H:i:s');
-         $bank_id = $this->input->post('bank_id');
-       $bankname = $this->db->select('bank_name')->from('bank_add')->where('bank_id',$bank_id)->get()->row()->bank_name;
-       $bankcoaid = $this->db->select('HeadCode')->from('acc_coa')->where('HeadName',$bankname)->get()->row()->HeadCode;
+        $bank_id = $this->input->post('bank_id');
+        $bankname = $this->db->select('bank_name')->from('bank_add')->where('bank_id',$bank_id)->get()->row()->bank_name;
+        $bankcoaid = $this->db->select('HeadCode')->from('acc_coa')->where('HeadName',$bankname)->get()->row()->HeadCode;
 
 	
 		
@@ -605,14 +606,20 @@ public function retrieve_invoice_editdata($invoice_id)
 		// tax colection
 		$this->db->where('relation_id',$invoice_id);
 		$this->db->delete('tax_collection');
-		 $tran = $this->auth->generator(15);		
+		$tran = $this->auth->generator(15);		
+		$totalAmount = $this->input->post('grand_total_price', true);
+		if(strpos($totalAmount,'.') !== false){
+			$totalAmount = str_replace('.', '', $totalAmount);
+		}
+		$totalAmount = substr($totalAmount, 0, -2);
 		
+
 	
 		$data=array(
 		    'invoice_id'        =>  $invoice_id,
 			'customer_id'		=>	$this->input->post('customer_id',true),
 			'date'				=>	$this->input->post('invoice_date',true),
-			'total_amount'		=>	str_replace('.','',$this->input->post('grand_total_price',true)),
+			'total_amount'		=>	$totalAmount,
 			'total_tax'			=>	$this->input->post('total_tax',true),
 			'invoice_details'   =>  $this->input->post('inva_details',true),
 			'total_discount' 	=> 	$this->input->post('total_discount',true),
@@ -668,6 +675,12 @@ public function retrieve_invoice_editdata($invoice_id)
       $i++;
     }
    $sumval = array_sum($purchase_ave);
+   $paidAmount = $this->input->post('paid_amount', true);
+   if(strpos($paidAmount,'.') !== false){
+	$paidAmount = str_replace('.', '', $paidAmount);
+   }
+ 
+   $paidAmount = substr($paidAmount, 0, -2);
 
    $cusifo = $this->db->select('*')->from('customer_information')->where('customer_id',$customer_id)->get()->row();
     $headn = $customer_id;
@@ -680,7 +693,7 @@ public function retrieve_invoice_editdata($invoice_id)
       'VDate'          =>  $createdate,
       'COAID'          =>  1020101,
       'Narration'      =>  'Cash in Hand For Invoice No'.$invoice_id,
-      'Debit'          =>  $this->input->post('paid_amount',true),
+      'Debit'          =>  $paidAmount,
       'Credit'         =>  0,
       'IsPosted'       =>  1,
       'CreateBy'       =>  $createby,
@@ -694,7 +707,7 @@ public function retrieve_invoice_editdata($invoice_id)
       'VDate'          =>  $createdate,
       'COAID'          =>  $bankcoaid,
       'Narration'      =>  'Paid amount for Invoice No '.$invoice_id,
-      'Debit'          =>  $this->input->post('paid_amount',true),
+      'Debit'          =>  $paidAmount,
       'Credit'         =>  0,
       'IsPosted'       =>  1,
       'CreateBy'       =>  $createby,
@@ -757,7 +770,7 @@ public function retrieve_invoice_editdata($invoice_id)
       'COAID'          =>  $customer_headcode,
       'Narration'      =>  'Customer credit for Paid Amount For Invoice No'.$invoice_id,
       'Debit'          =>  0,
-      'Credit'         =>  $this->input->post('paid_amount',true),
+      'Credit'         => $paidAmount,
       'IsPosted'       => 1,
       'CreateBy'       => $createby,
       'CreateDate'     => $createdate,
@@ -773,30 +786,44 @@ public function retrieve_invoice_editdata($invoice_id)
        	}
   }
 
-
+		$totalPrice = $this->input->post('total_price', true);
         $invoice_d_id 	= $this->input->post('invoice_details_id',true);
         $cartoon 		= $this->input->post('cartoon',true);
         $quantity 		= $this->input->post('product_quantity',true);
 		$rate 			= $this->input->post('product_rate',true);
 		$p_id 			= $this->input->post('product_id',true);
-		$total_amount 	= str_replace('.','',$this->input->post('total_price',true));
+		$total_amount 	= $totalPrice;
 		$discount_rate 	= $this->input->post('discount',true);
 		$batch_id 	    = $this->input->post('batch_id',true);
 		$tax_amount 	= $this->input->post('tax',true);
 
         $this->db->where('invoice_id',$invoice_id);
 		$this->db->delete('invoice_details'); 
-	
+		
 		for ($i=0, $n=count($p_id); $i < $n; $i++) {
 			$cartoon_quantity = $cartoon[$i];
 			$product_quantity = $quantity[$i];
 			$product_rate 	  = $rate[$i];
 			$product_id 	  = $p_id[$i];
 			$total_price 	  = $total_amount[$i];
-			$manufacturer_rate 	  = $this->manufacturer_rate($product_id);
+			$manufacturer_rate= $this->manufacturer_rate($product_id);
 			$discount 		  = $discount_rate[$i];
 			$batch 			  = $batch_id[$i];
 			$tax 			  = $tax_amount[$i];
+			/**
+			 * 180.00
+			 * 18000
+			 * 180
+			 */
+			if (strpos($total_price, '.') !== false) {
+				$total_price2 = str_replace('.', '', $total_price);
+				$total_price = substr($total_price2, 0, -2);
+			}
+			
+			
+			
+
+			
 			
 			$data1 = array(
 				'invoice_details_id'=>$this->generator(15),
@@ -808,7 +835,7 @@ public function retrieve_invoice_editdata($invoice_id)
 				'discount'		=>	$discount,
 				'total_price'	=>	$total_price,
 				'tax'   		=>	$tax,
-				'paid_amount'   =>	str_replace('.','',$this->input->post('paid_amount',true)),
+				'paid_amount'   =>	$paidAmount,
 				'due_amount'    =>	$this->input->post('due_amount',true),
 			);
 			$this->db->insert('invoice_details',$data1);
