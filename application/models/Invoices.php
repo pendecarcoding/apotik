@@ -797,7 +797,9 @@ public function retrieve_invoice_editdata($invoice_id)
 
         $this->db->where('invoice_id',$invoice_id);
 		$this->db->delete('invoice_details'); 
-	
+		$totalPrice = $this->input->post('total_price', true);
+		$totalPrice = substr($totalPrice, 0, -3);
+		$totalPrice = str_replace('.', '', $totalPrice);
 		for ($i=0, $n=count($p_id); $i < $n; $i++) {
 			$cartoon_quantity = $cartoon[$i];
 			$product_quantity = $quantity[$i];
@@ -817,7 +819,7 @@ public function retrieve_invoice_editdata($invoice_id)
 				'quantity'		=>	$product_quantity,
 				'rate'			=>	$product_rate,
 				'discount'		=>	$discount,
-				'total_price'	=>	300000,
+				'total_price'	=>	$totalPrice,
 				'tax'   		=>	$tax,
 				'paid_amount'   =>	$paidAmount,
 				'due_amount'    =>	$this->input->post('due_amount',true),
