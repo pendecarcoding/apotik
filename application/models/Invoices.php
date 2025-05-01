@@ -321,14 +321,15 @@ public function pos_invoice_setup($product_id){
 	
 
 		//Data inserting into invoice table
-		$grand_total_price = $this->input->post('grand_total_price',true);
-		$grand_total_price = str_replace(['.', ','], ['', '.'], $grand_total_price);
-        $grand_total_price = (float) $grand_total_price;
+		$totalAmount = $this->input->post('grand_total_price',true);
+		if (is_numeric($totalAmount) && floor($totalAmount) == $totalAmount) {
+					$totalAmount = intval($totalAmount);
+		}
 		$datainv=array(
 			'invoice_id'		=>	$invoice_id,
 			'customer_id'		=>	$customer_id,
 			'date'				=>	$this->input->post('invoice_date',true),
-			'total_amount'		=>	$grand_total_price,
+			'total_amount'		=>	$totalAmount,
 			'total_tax'			=>	$this->input->post('total_tax',true),
 			'invoice'			=>	$this->number_generator(),
 			'invoice_details'   =>  $this->input->post('inva_details',true),
@@ -605,14 +606,17 @@ public function retrieve_invoice_editdata($invoice_id)
 		// tax colection
 		$this->db->where('relation_id',$invoice_id);
 		$this->db->delete('tax_collection');
-		 $tran = $this->auth->generator(15);		
-		
+		$tran = $this->auth->generator(15);		
+		$totalAmount = $this->input->post('grand_total_price',true);
+		if (is_numeric($totalAmount) && floor($totalAmount) == $totalAmount) {
+					$totalAmount = intval($totalAmount);
+		}
 	
 		$data=array(
 		    'invoice_id'        =>  $invoice_id,
 			'customer_id'		=>	$this->input->post('customer_id',true),
 			'date'				=>	$this->input->post('invoice_date',true),
-			'total_amount'		=>	str_replace('.','',$this->input->post('grand_total_price',true)),
+			'total_amount'		=>	$totalAmount,
 			'total_tax'			=>	$this->input->post('total_tax',true),
 			'invoice_details'   =>  $this->input->post('inva_details',true),
 			'total_discount' 	=> 	$this->input->post('total_discount',true),
