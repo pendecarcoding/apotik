@@ -607,10 +607,22 @@ public function retrieve_invoice_editdata($invoice_id)
 		$this->db->where('relation_id',$invoice_id);
 		$this->db->delete('tax_collection');
 		$tran = $this->auth->generator(15);		
-		$totalAmount = $this->input->post('grand_total_price',true);
-		if (is_numeric($totalAmount) && floor($totalAmount) == $totalAmount) {
-					$totalAmount = intval($totalAmount);
+		$totalAmount = $this->input->post('grand_total_price', true);
+
+		// Ubah format Indonesia ke format numerik standar
+		$totalAmount = str_replace('.', '', $totalAmount);    // hapus pemisah ribuan
+		$totalAmount = str_replace(',', '.', $totalAmount);   // ubah desimal jadi titik
+
+		// Pastikan numeric
+		if (is_numeric($totalAmount)) {
+			// Jika bilangan bulat, hapus desimal
+			if (floor($totalAmount) == $totalAmount) {
+				$totalAmount = intval($totalAmount); // hasil 500 atau 300000
+			} else {
+				$totalAmount = floatval($totalAmount); // hasil 500.25, dsb
+			}
 		}
+
 	
 		$data=array(
 		    'invoice_id'        =>  $invoice_id,
@@ -672,13 +684,22 @@ public function retrieve_invoice_editdata($invoice_id)
       $i++;
     }
    $sumval = array_sum($purchase_ave);
-   $paidAmount = ($this->input->post('paid_amount',true));
    $paidAmount = $this->input->post('paid_amount', true);
 
-	// Hapus .00 jika nilai adalah bilangan bulat
-	if (is_numeric($paidAmount) && floor($paidAmount) == $paidAmount) {
-		$paidAmount = intval($paidAmount);
+	// Ubah format Indonesia ke format numerik standar
+	$paidAmount = str_replace('.', '', $paidAmount);    // hapus titik ribuan
+	$paidAmount = str_replace(',', '.', $paidAmount);   // ubah koma ke titik desimal
+
+	// Pastikan numeric
+	if (is_numeric($paidAmount)) {
+		// Jika bilangan bulat, ubah ke integer
+		if (floor($paidAmount) == $paidAmount) {
+			$paidAmount = intval($paidAmount);
+		} else {
+			$paidAmount = floatval($paidAmount);
+		}
 	}
+
    $cusifo = $this->db->select('*')->from('customer_information')->where('customer_id',$customer_id)->get()->row();
     $headn = $customer_id;
     $coainfo = $this->db->select('*')->from('acc_coa')->where('customer_id',$headn)->get()->row();
@@ -783,11 +804,21 @@ public function retrieve_invoice_editdata($invoice_id)
        	}
   }
 
-        $totalPrice     = $this->input->post('total_price',true);
-		// Hapus .00 jika nilai adalah bilangan bulat
-		if (is_numeric($totalPrice) && floor($totalPrice) == $totalPrice) {
-			$totalPrice = intval($totalPrice);
+		$totalPrice = $this->input->post('total_price', true);
+
+		// Ubah format Indonesia ke format numerik standar
+		$totalPrice = str_replace('.', '', $totalPrice);    // hapus pemisah ribuan
+		$totalPrice = str_replace(',', '.', $totalPrice);   // ubah koma ke titik desimal
+		
+		// Pastikan numeric
+		if (is_numeric($totalPrice)) {
+			if (floor($totalPrice) == $totalPrice) {
+				$totalPrice = intval($totalPrice);  // buang .00 jika bilangan bulat
+			} else {
+				$totalPrice = floatval($totalPrice); // pertahankan jika ada desimal
+			}
 		}
+		
 
         $invoice_d_id 	= $this->input->post('invoice_details_id',true);
         $cartoon 		= $this->input->post('cartoon',true);
