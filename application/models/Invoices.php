@@ -609,10 +609,12 @@ public function retrieve_invoice_editdata($invoice_id)
 		$tran = $this->auth->generator(15);		
 		$totalAmount = $this->input->post('grand_total_price', true);
 
-		// Ubah format Indonesia ke format numerik standar
-		$totalAmount = str_replace('.', '', $totalAmount);    // hapus pemisah ribuan
-		$totalAmount = str_replace(',', '.', $totalAmount);   // ubah desimal jadi titik
+		if(strpos($totalAmount, ',') !== false){
+			// Ubah format Indonesia ke format numerik standar
+			$totalAmount = str_replace('.', '', $totalAmount);    // hapus pemisah ribuan
+			$totalAmount = str_replace(',', '.', $totalAmount);   // ubah desimal jadi titik
 
+		}
 		// Pastikan numeric
 		if (is_numeric($totalAmount)) {
 			// Jika bilangan bulat, hapus desimal
@@ -686,11 +688,12 @@ public function retrieve_invoice_editdata($invoice_id)
    $sumval = array_sum($purchase_ave);
    $paidAmount = $this->input->post('paid_amount', true);
 
-	// Ubah format Indonesia ke format numerik standar
-	$paidAmount = str_replace('.', '', $paidAmount);    // hapus titik ribuan
-	$paidAmount = str_replace(',', '.', $paidAmount);   // ubah koma ke titik desimal
-
-	// Pastikan numeric
+   if(strpos($paidAmount, ',') !== false){
+		// Ubah format Indonesia ke format numerik standar
+		$paidAmount = str_replace('.', '', $paidAmount);    // hapus titik ribuan
+		$paidAmount = str_replace(',', '.', $paidAmount);   // ubah koma ke titik desimal
+   }
+// Pastikan numeric
 	if (is_numeric($paidAmount)) {
 		// Jika bilangan bulat, ubah ke integer
 		if (floor($paidAmount) == $paidAmount) {
@@ -806,16 +809,19 @@ public function retrieve_invoice_editdata($invoice_id)
 
 		$totalPrice = $this->input->post('total_price', true);
 
-		// Ubah format Indonesia ke format numerik standar
-		$totalPrice = str_replace('.', '', $totalPrice);    // hapus pemisah ribuan
-		$totalPrice = str_replace(',', '.', $totalPrice);   // ubah koma ke titik desimal
-		
-		// Pastikan numeric
+				// Deteksi apakah menggunakan format Indonesia (mengandung koma sebagai desimal)
+		if (strpos($totalPrice, ',') !== false) {
+			// Anggap format Indonesia: ubah titik ribuan dan koma desimal
+			$totalPrice = str_replace('.', '', $totalPrice);
+			$totalPrice = str_replace(',', '.', $totalPrice);
+		}
+
+		// Sekarang parsing
 		if (is_numeric($totalPrice)) {
 			if (floor($totalPrice) == $totalPrice) {
-				$totalPrice = intval($totalPrice);  // buang .00 jika bilangan bulat
+				$totalPrice = intval($totalPrice);
 			} else {
-				$totalPrice = floatval($totalPrice); // pertahankan jika ada desimal
+				$totalPrice = floatval($totalPrice);
 			}
 		}
 		
