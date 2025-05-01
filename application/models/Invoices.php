@@ -817,7 +817,7 @@ public function retrieve_invoice_editdata($invoice_id)
 				'quantity'		=>	$product_quantity,
 				'rate'			=>	$product_rate,
 				'discount'		=>	$discount,
-				'total_price'	=>	$total_price,
+				'total_price'	=>	300000,
 				'tax'   		=>	$tax,
 				'paid_amount'   =>	$paidAmount,
 				'due_amount'    =>	$this->input->post('due_amount',true),
