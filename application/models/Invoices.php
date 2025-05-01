@@ -817,7 +817,6 @@ public function retrieve_invoice_editdata($invoice_id)
 			$tax 			  = $tax_amount[$i];
 
 			$total_price = substr($total_price, 0, -3);
-			$total_price = str_replace('.', '', $total_price);
 			
 			$data1 = array(
 				'invoice_details_id'=>$this->generator(15),
