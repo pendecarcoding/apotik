@@ -585,8 +585,8 @@ public function retrieve_invoice_editdata($invoice_id)
         $quantity = $this->input->post('product_quantity',true);
         $createdate=date('Y-m-d H:i:s');
          $bank_id = $this->input->post('bank_id');
-       $bankname = $this->db->select('bank_name')->from('bank_add')->where('bank_id',$bank_id)->get()->row()->bank_name;
-       $bankcoaid = $this->db->select('HeadCode')->from('acc_coa')->where('HeadName',$bankname)->get()->row()->HeadCode;
+        $bankname = $this->db->select('bank_name')->from('bank_add')->where('bank_id',$bank_id)->get()->row()->bank_name;
+        $bankcoaid = $this->db->select('HeadCode')->from('acc_coa')->where('HeadName',$bankname)->get()->row()->HeadCode;
 
 	
 		
@@ -661,7 +661,13 @@ public function retrieve_invoice_editdata($invoice_id)
       $i++;
     }
    $sumval = array_sum($purchase_ave);
+   $paidAmount = ($this->input->post('paid_amount',true));
+   $paidAmount = $this->input->post('paid_amount', true);
 
+	// Hapus .00 jika nilai adalah bilangan bulat
+	if (is_numeric($paidAmount) && floor($paidAmount) == $paidAmount) {
+		$paidAmount = intval($paidAmount);
+	}
    $cusifo = $this->db->select('*')->from('customer_information')->where('customer_id',$customer_id)->get()->row();
     $headn = $customer_id;
     $coainfo = $this->db->select('*')->from('acc_coa')->where('customer_id',$headn)->get()->row();
@@ -673,7 +679,7 @@ public function retrieve_invoice_editdata($invoice_id)
       'VDate'          =>  $createdate,
       'COAID'          =>  1020101,
       'Narration'      =>  'Cash in Hand For Invoice No'.$invoice_id,
-      'Debit'          =>  $this->input->post('paid_amount',true),
+      'Debit'          =>  $paidAmount,
       'Credit'         =>  0,
       'IsPosted'       =>  1,
       'CreateBy'       =>  $createby,
@@ -687,7 +693,7 @@ public function retrieve_invoice_editdata($invoice_id)
       'VDate'          =>  $createdate,
       'COAID'          =>  $bankcoaid,
       'Narration'      =>  'Paid amount for Invoice No '.$invoice_id,
-      'Debit'          =>  $this->input->post('paid_amount',true),
+      'Debit'          =>  $paidAmount,
       'Credit'         =>  0,
       'IsPosted'       =>  1,
       'CreateBy'       =>  $createby,
@@ -750,7 +756,7 @@ public function retrieve_invoice_editdata($invoice_id)
       'COAID'          =>  $customer_headcode,
       'Narration'      =>  'Customer credit for Paid Amount For Invoice No'.$invoice_id,
       'Debit'          =>  0,
-      'Credit'         =>  $this->input->post('paid_amount',true),
+      'Credit'         => $paidAmount,
       'IsPosted'       => 1,
       'CreateBy'       => $createby,
       'CreateDate'     => $createdate,
@@ -766,13 +772,18 @@ public function retrieve_invoice_editdata($invoice_id)
        	}
   }
 
+        $totalPrice     = $this->input->post('total_price',true);
+		// Hapus .00 jika nilai adalah bilangan bulat
+		if (is_numeric($totalPrice) && floor($totalPrice) == $totalPrice) {
+			$totalPrice = intval($totalPrice);
+		}
 
         $invoice_d_id 	= $this->input->post('invoice_details_id',true);
         $cartoon 		= $this->input->post('cartoon',true);
         $quantity 		= $this->input->post('product_quantity',true);
 		$rate 			= $this->input->post('product_rate',true);
 		$p_id 			= $this->input->post('product_id',true);
-		$total_amount 	= $this->input->post('total_price',true);
+		$total_amount 	= $totalPrice;
 		$discount_rate 	= $this->input->post('discount',true);
 		$batch_id 	    = $this->input->post('batch_id',true);
 		$tax_amount 	= $this->input->post('tax',true);
@@ -801,7 +812,7 @@ public function retrieve_invoice_editdata($invoice_id)
 				'discount'		=>	$discount,
 				'total_price'	=>	$total_price,
 				'tax'   		=>	$tax,
-				'paid_amount'   =>	$this->input->post('paid_amount',true),
+				'paid_amount'   =>	$paidAmount,
 				'due_amount'    =>	$this->input->post('due_amount',true),
 			);
 			$this->db->insert('invoice_details',$data1);
