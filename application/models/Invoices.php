@@ -822,9 +822,10 @@ public function retrieve_invoice_editdata($invoice_id)
 			 */
 			if (strpos($total_price, '.') !== false) {
 				$total_price = str_replace('.', '', $total_price);
+				$total_price = substr($total_price, 0, -2);
 			}
 			
-			$total_price = substr($total_price, 0, -2);
+			
 			
 
 			
