@@ -608,7 +608,7 @@ public function retrieve_invoice_editdata($invoice_id)
 		$this->db->delete('tax_collection');
 		$tran = $this->auth->generator(15);		
 		$totalAmount = $this->input->post('grand_total_price', true);
-		if(strpos($totalAmount,'.') !== false){
+		if(strpos($totalAmount,'.') == true){
 			$totalAmount = substr($totalAmount, 0, -3);
 		}
 		
@@ -676,7 +676,7 @@ public function retrieve_invoice_editdata($invoice_id)
     }
    $sumval = array_sum($purchase_ave);
    $paidAmount = $this->input->post('paid_amount', true);
-   if(strpos($paidAmount,'.') !== false){
+   if(strpos($paidAmount,'.') == true){
 	$paidAmount = substr($paidAmount, 0, -3);
    }
    $paidAmount = str_replace('.', '', $paidAmount);
@@ -786,7 +786,7 @@ public function retrieve_invoice_editdata($invoice_id)
   }
 
 		$totalPrice = $this->input->post('total_price', true);
-		if(strpos($totalPrice,'.') !== false){
+		if(strpos($totalPrice,'.') == true){
 		$totalPrice = substr($totalPrice, 0, -3);
 		}
 		$totalPrice = str_replace('.', '', $totalPrice);
