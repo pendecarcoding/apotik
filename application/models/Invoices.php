@@ -816,11 +816,7 @@ public function retrieve_invoice_editdata($invoice_id)
 			$batch 			  = $batch_id[$i];
 			$tax 			  = $tax_amount[$i];
 
-			if(strpos($total_price,'.') !== false){
-				$total_price = substr($total_price, 0, -3);
-				
-			}
-
+			$total_price = substr($total_price, 0, -3);
 			$total_price = str_replace('.', '', $total_price);
 			
 			$data1 = array(
