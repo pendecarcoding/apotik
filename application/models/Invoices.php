@@ -611,8 +611,9 @@ public function retrieve_invoice_editdata($invoice_id)
 		$totalAmount = $this->input->post('grand_total_price', true);
 		if(strpos($totalAmount,'.') !== false){
 			$totalAmount = str_replace('.', '', $totalAmount);
+			$totalAmount = substr($totalAmount, 0, -2);
 		}
-		$totalAmount = substr($totalAmount, 0, -2);
+		
 		
 
 	
@@ -679,9 +680,10 @@ public function retrieve_invoice_editdata($invoice_id)
    $paidAmount = $this->input->post('paid_amount', true);
    if(strpos($paidAmount,'.') !== false){
 	$paidAmount = str_replace('.', '', $paidAmount);
+	$paidAmount = substr($paidAmount, 0, -2);
    }
  
-   $paidAmount = substr($paidAmount, 0, -2);
+   
 
    $cusifo = $this->db->select('*')->from('customer_information')->where('customer_id',$customer_id)->get()->row();
     $headn = $customer_id;
