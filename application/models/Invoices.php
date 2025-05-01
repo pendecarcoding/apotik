@@ -815,11 +815,13 @@ public function retrieve_invoice_editdata($invoice_id)
 			$discount 		  = $discount_rate[$i];
 			$batch 			  = $batch_id[$i];
 			$tax 			  = $tax_amount[$i];
+			/**
+			 * 180.00
+			 * 18000
+			 * 180
+			 */
 			$total_price = str_replace('.', '', $total_price);
-			// if(strpos($total_price,'.') == true){
-			$total_price = substr($total_price, 0, -3);
-				
-			// }
+			$total_price = substr($total_price, 0, -2);
 
 			
 			
