@@ -810,14 +810,17 @@ public function retrieve_invoice_editdata($invoice_id)
 			$product_quantity = $quantity[$i];
 			$product_rate 	  = $rate[$i];
 			$product_id 	  = $p_id[$i];
-			if (strpos($total_amount[$i], '.') !== false) {
-				$totaltemp = substr($total_amount[$i], 0, -3);
-			}
-			$total_price = str_replace('.', '', $totaltemp);
-			$manufacturer_rate 	  = $this->manufacturer_rate($product_id);
+			$total_price 	  = $total_amount[$i];
+			$manufacturer_rate= $this->manufacturer_rate($product_id);
 			$discount 		  = $discount_rate[$i];
 			$batch 			  = $batch_id[$i];
 			$tax 			  = $tax_amount[$i];
+
+			if(strpos($total_price,'.') !== false){
+				$total_price = substr($total_price, 0, -3);
+			}
+
+			$total_price = str_replace('.', '', $total_price);
 			
 			$data1 = array(
 				'invoice_details_id'=>$this->generator(15),
