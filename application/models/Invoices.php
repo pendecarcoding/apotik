@@ -608,7 +608,7 @@ public function retrieve_invoice_editdata($invoice_id)
 		$this->db->delete('tax_collection');
 		$tran = $this->auth->generator(15);		
 		$totalAmount = $this->input->post('grand_total_price', true);
-
+		$totalAmount = substr($totalAmount, 0, -3);
 		if(strpos($totalAmount, ',') !== false){
 			// Ubah format Indonesia ke format numerik standar
 			$totalAmount = str_replace('.', '', $totalAmount);    // hapus pemisah ribuan
@@ -687,7 +687,7 @@ public function retrieve_invoice_editdata($invoice_id)
     }
    $sumval = array_sum($purchase_ave);
    $paidAmount = $this->input->post('paid_amount', true);
-
+   $paidAmount = substr($paidAmount, 0, -3);
    if(strpos($paidAmount, ',') !== false){
 		// Ubah format Indonesia ke format numerik standar
 		$paidAmount = str_replace('.', '', $paidAmount);    // hapus titik ribuan
@@ -808,6 +808,7 @@ public function retrieve_invoice_editdata($invoice_id)
   }
 
 		$totalPrice = $this->input->post('total_price', true);
+		$totalPrice = substr($totalPrice, 0, -3);
 
 				// Deteksi apakah menggunakan format Indonesia (mengandung koma sebagai desimal)
 		if (strpos($totalPrice, ',') !== false) {
