@@ -811,9 +811,9 @@ public function retrieve_invoice_editdata($invoice_id)
 			$product_rate 	  = $rate[$i];
 			$product_id 	  = $p_id[$i];
 			if (strpos($total_amount[$i], '.') !== false) {
-				$total_amount[$i] = substr($total_amount[$i], 0, -3);
+				$totaltemp = substr($total_amount[$i], 0, -3);
 			}
-			$total_price = str_replace('.', '', $total_amount[$i]);
+			$total_price = str_replace('.', '', $totaltemp);
 			$manufacturer_rate 	  = $this->manufacturer_rate($product_id);
 			$discount 		  = $discount_rate[$i];
 			$batch 			  = $batch_id[$i];
