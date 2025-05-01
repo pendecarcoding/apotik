@@ -322,8 +322,9 @@ public function pos_invoice_setup($product_id){
 
 		//Data inserting into invoice table
 		$totalAmount = $this->input->post('grand_total_price',true);
-		if (is_numeric($totalAmount) && floor($totalAmount) == $totalAmount) {
-					$totalAmount = intval($totalAmount);
+		if(strpos($totalAmount,'.') !== false){
+			$totalAmount = str_replace('.','',$totalAmount);
+			$totalAmount = substr($totalAmount, 0, -2);
 		}
 		$datainv=array(
 			'invoice_id'		=>	$invoice_id,
