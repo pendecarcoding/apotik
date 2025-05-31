@@ -16,6 +16,7 @@ class LogModel extends CI_Model {
         $this->db->from('user_logs');
         $this->db->join('users', 'users.user_id = user_logs.user_id'); // Join with the users table on user ID
         $this->db->order_by('user_logs.timestamp', 'DESC');
+        $this->db->limit(100); // Limit to 100 records
         return $this->db->get()->result_array();
     }
 }
